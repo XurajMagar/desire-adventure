@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // DOWNLOAD ITINERARY AS PDF
+    // DOWNLOAD ITINERARY
     // ============================================
     var downloadBtn = document.getElementById('tpDownloadBtn');
     if (downloadBtn) {
@@ -416,148 +416,125 @@ document.addEventListener('DOMContentLoaded', function() {
             var spanEl = btn.querySelector('span');
             var originalText = spanEl ? spanEl.textContent : 'Download';
 
-            spanEl.textContent = 'Loading...';
+            spanEl.textContent = 'Generating...';
             btn.disabled = true;
 
-            // Remove any previously loaded html2pdf script to avoid conflicts
-            var existingScript = document.querySelector('script[data-html2pdf]');
-            if (existingScript) existingScript.remove();
+            var template = document.getElementById('tp-print-template');
+            if (!template) {
+                alert('Template not found. Please refresh and try again.');
+                spanEl.textContent = originalText;
+                btn.disabled = false;
+                return;
+            }
 
-            var script = document.createElement('script');
-            script.setAttribute('data-html2pdf', 'true');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            // Show day photos
+            document.querySelectorAll('.tp-pdf-only').forEach(function(el) {
+                el.style.display = 'block';
+            });
 
-            script.onload = function() {
-                console.log('html2pdf loaded successfully');
-                spanEl.textContent = 'Generating...';
+            // Get trip title
+            var titleEl = document.querySelector('.tp-hero-title');
+            var tripTitle = titleEl ? titleEl.textContent.trim() : 'Trek Itinerary';
 
-                setTimeout(function() {
-                    runPDF();
-                }, 300);
-            };
+            // Strip emojis FIRST before building docContent
+            var rawContent = template.querySelector('.tp-print-doc').innerHTML;
+            var printContent = rawContent
+                .replace(/<img[^>]*class="[^"]*emoji[^"]*"[^>]*>/gi, '')
+                .replace(/[^\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g, ' ')
+                .replace(/\s{2,}/g, ' ');
 
-            script.onerror = function() {
-                console.error('Failed to load html2pdf from CDN');
-                // Try fallback CDN
-                var fallback = document.createElement('script');
-                fallback.src = 'https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js';
-                fallback.onload = function() {
-                    console.log('html2pdf loaded from fallback CDN');
-                    spanEl.textContent = 'Generating...';
-                    setTimeout(runPDF, 300);
-                };
-                fallback.onerror = function() {
-                    alert('Could not load PDF library. Please check your internet connection and try again.');
-                    spanEl.textContent = originalText;
-                    btn.disabled = false;
-                };
-                document.head.appendChild(fallback);
-            };
+            var fontUrl = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=DM+Sans:wght@400;500;700&display=swap';
 
-            document.head.appendChild(script);
+            // Build ONE clean docContent using stripped printContent
+            var docContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + tripTitle + ' Itinerary</title><link rel="stylesheet" href="' + fontUrl + '"><style>' +
+                '* { margin:0; padding:0; box-sizing:border-box; }' +
+                'body { font-family:"DM Sans",sans-serif; font-size:12pt; line-height:1.6; color:#1C1A17; background:#fff; }' +
+                '.tp-print-doc { max-width:720px; margin:0 auto; padding:30px 40px; }' +
+                '.tp-print-header { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:3px solid #1A2E20; margin-bottom:24px; gap:20px; }' +
+                '.tp-print-logo-text { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#1A2E20; text-transform:uppercase; letter-spacing:1px; }' +
+                '.tp-print-logo img { max-height:55px; width:auto; }' +
+                '.tp-print-title { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#1A2E20; margin-bottom:8px; line-height:1.2; }' +
+                '.tp-print-meta-row { display:flex; flex-wrap:wrap; gap:12px; font-size:10pt; color:#555; }' +
+                '.tp-print-price-block { background:#1A2E20; color:#fff; padding:12px 20px; border-radius:6px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }' +
+                '.tp-print-price-label { font-size:10pt; opacity:0.6; }' +
+                '.tp-print-price-val { font-family:"Cormorant Garamond",serif; font-size:20pt; font-weight:600; color:#C17F3A; }' +
+                '.tp-print-price-pp { font-size:10pt; opacity:0.6; }' +
+                '.tp-print-discount { background:#e74c3c; color:#fff; font-size:9pt; font-weight:700; padding:2px 8px; border-radius:100px; }' +
+                '.tp-print-section { margin-bottom:28px; }' +
+                '.tp-print-section-title { font-family:"Cormorant Garamond",serif; font-size:16pt; font-weight:600; color:#1A2E20; padding-bottom:8px; border-bottom:2px solid #C17F3A; margin-bottom:16px; }' +
+                '.tp-print-content { font-size:11pt; color:#333; line-height:1.7; }' +
+                '.tp-print-content p { margin-bottom:10px; }' +
+                '.tp-print-day { display:flex; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; page-break-inside:avoid; }' +
+                '.tp-print-day-num { font-size:10pt; font-weight:700; text-transform:uppercase; color:#fff; background:#1A2E20; padding:4px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; height:fit-content; }' +
+                '.tp-print-day-body { flex:1; }' +
+                '.tp-print-day-title { font-size:12pt; font-weight:700; color:#1C1A17; margin-bottom:4px; }' +
+                '.tp-print-day-chips { display:flex; gap:10px; margin-bottom:6px; }' +
+                '.tp-print-day-chips span { font-size:9pt; color:#888; background:#f5f5f5; padding:2px 8px; border-radius:100px; }' +
+                '.tp-print-day-desc { font-size:11pt; color:#555; line-height:1.6; }' +
+                '.tp-print-day-photo { width:100%; max-height:220px; object-fit:cover; border-radius:6px; margin-top:10px; display:block; }' +
+                '.tp-print-inc-grid { display:flex; gap:24px; }' +
+                '.tp-print-inc-col { flex:1; }' +
+                '.tp-print-inc-col h4 { font-size:11pt; font-weight:700; margin-bottom:8px; }' +
+                '.tp-print-inc-col ul { padding-left:16px; }' +
+                '.tp-print-inc-col li { font-size:10pt; color:#444; margin-bottom:4px; line-height:1.5; }' +
+                '.tp-print-page-break { page-break-before:always; }' +
+                '.tp-print-footer { margin-top:40px; padding-top:16px; border-top:1px solid #ddd; text-align:center; font-size:9pt; color:#888; }' +
+                '@page { margin:15mm; size:A4 portrait; }' +
+                'img.emoji, img.wp-smiley { display:none !important; width:0 !important; height:0 !important; }' +
+                '.tp-acc-block-icon, .tp-pack-icon, .tp-highlights-icon { display:none !important; }' +
+                'span:empty { display:none !important; }' +
+                '@media print { body { background:#fff; } .tp-print-day { page-break-inside:avoid; } }' +
+                '</style></head><body>' +
+                '<div style="position:fixed;top:16px;right:16px;z-index:9999;display:flex;gap:8px;">' +
+                '<button onclick="window.print()" style="background:#1A2E20;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Save as PDF</button>' +
+                '<button onclick="window.close()" style="background:#eee;color:#333;border:none;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Close</button>' +
+                '</div>' +
+                '<div class="tp-print-doc">' + printContent + '</div>' +
+                '</body></html>';
 
-            function runPDF() {
-                var template = document.getElementById('tp-print-template');
+            // Open new window
+            var printWin = window.open('', '_blank', 'width=900,height=700');
 
-                if (!template) {
-                    console.error('tp-print-template element not found');
-                    alert('Print template not found. Please refresh the page and try again.');
-                    spanEl.textContent = originalText;
-                    btn.disabled = false;
-                    return;
-                }
-
-                // Show PDF-only elements (day photos)
+            if (!printWin) {
+                alert('Pop-up blocked! Please allow pop-ups for this site and try again.');
+                spanEl.textContent = originalText;
+                btn.disabled = false;
                 document.querySelectorAll('.tp-pdf-only').forEach(function(el) {
-                    el.style.display = 'block';
+                    el.style.display = 'none';
                 });
+                return;
+            }
 
-                // Make template visible for html2canvas to capture
-                template.style.cssText = [
-                    'display: block !important',
-                    'position: fixed !important',
-                    'top: 0 !important',
-                    'left: 0 !important',
-                    'width: 794px !important',
-                    'min-height: 100px !important',
-                    'background: #fff !important',
-                    'z-index: -9999 !important',
-                    'opacity: 0.01 !important',
-                    'pointer-events: none !important'
-                ].join(';');
+            printWin.document.write(docContent);
+            printWin.document.close();
 
-                var element = template.querySelector('.tp-print-doc');
+            printWin.onload = function() {
+                setTimeout(function() {
+                    printWin.print();
 
-                if (!element) {
-                    console.error('.tp-print-doc not found inside template');
-                    template.style.cssText = 'display:none';
+                    // Reset button after print dialog opens
                     spanEl.textContent = originalText;
                     btn.disabled = false;
-                    return;
-                }
-
-                console.log('Starting PDF generation...');
-                console.log('Element dimensions:', element.offsetWidth, 'x', element.offsetHeight);
-
-                // Get trip title for filename
-                var titleEl = document.querySelector('.tp-hero-title') ||
-                    document.querySelector('h1.tp-print-title') ||
-                    document.querySelector('h1');
-                var tripTitle = titleEl ? titleEl.textContent.trim() : 'Itinerary';
-                var filename = tripTitle
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/^-|-$/g, '') +
-                    '-itinerary.pdf';
-
-                console.log('Filename:', filename);
-
-                var opt = {
-                    margin: [10, 10, 10, 10],
-                    filename: filename,
-                    image: { type: 'jpeg', quality: 0.85 },
-                    html2canvas: {
-                        scale: 1.5,
-                        useCORS: true,
-                        allowTaint: true,
-                        logging: true,
-                        width: 794,
-                        windowWidth: 794
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: 'a4',
-                        orientation: 'portrait'
-                    },
-                    pagebreak: {
-                        mode: ['css', 'legacy'],
-                        before: '.tp-print-page-break'
-                    }
-                };
-
-                html2pdf()
-                    .set(opt)
-                    .from(element)
-                    .save()
-                    .then(function() {
-                        console.log('PDF generated successfully');
-                        cleanup();
-                    })
-                    .catch(function(err) {
-                        console.error('PDF generation failed:', err);
-                        alert('PDF generation failed: ' + err.message + '\nPlease try again.');
-                        cleanup();
-                    });
-
-                function cleanup() {
-                    template.style.cssText = 'display: none !important';
                     document.querySelectorAll('.tp-pdf-only').forEach(function(el) {
                         el.style.display = 'none';
                     });
-                    spanEl.textContent = originalText;
-                    btn.disabled = false;
+                }, 1000);
+            };
+
+            // Fallback reset in case onload never fires
+            setTimeout(function() {
+                spanEl.textContent = originalText;
+                btn.disabled = false;
+                document.querySelectorAll('.tp-pdf-only').forEach(function(el) {
+                    el.style.display = 'none';
+                });
+            }, 3000);
+            // Extra safety — remove emoji images after write
+            printWin.document.querySelectorAll('img').forEach(function(img) {
+                if (img.src.indexOf('emoji') !== -1 || img.src.indexOf('twemoji') !== -1 || img.width < 30) {
+                    img.parentNode.removeChild(img);
                 }
-            }
+            });
         });
     }
     // ============================================

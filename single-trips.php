@@ -229,10 +229,10 @@ $diff_badge = $diff_colors[ $difficulty ] ?? 'badge-amber';
     <nav class="tp-subnav">
         <a class="tp-subnav-link active" href="#tp-overview">Overview</a>
         <?php if ( ! empty( $days ) ) : ?>
-        <a class="tp-subnav-link" href="#tp-itinerary">Itinerary</a>
-        <?php endif; ?>
         <?php if ( $includes || $excludes ) : ?>
         <a class="tp-subnav-link" href="#tp-includes">Includes</a>
+        <?php endif; ?>
+        <a class="tp-subnav-link" href="#tp-itinerary">Itinerary</a>
         <?php endif; ?>
         <?php if ( get_post_meta( get_the_ID(), '_trip_pack_1_item', true ) ) : ?>
         <a class="tp-subnav-link" href="#tp-packing">Packing List</a>
@@ -384,51 +384,6 @@ $diff_badge = $diff_colors[ $difficulty ] ?? 'badge-amber';
 
         </section>
 
-        <!-- ITINERARY -->
-        <?php if ( ! empty( $days ) ) : ?>
-        <section id="tp-itinerary" class="tp-section">
-            <div class="tp-section-divider"></div>
-            <p class="tp-section-label">Day by Day</p>
-            <h2 class="tp-section-title">Full Itinerary</h2>
-
-            <div class="tp-timeline">
-                <?php foreach ( $days as $idx => $day ) :
-                    $day_num = $idx + 1;
-                    $is_last = $idx === count( $days ) - 1;
-                ?>
-                <div class="tp-day-item">
-                    <div class="tp-day-spine">
-                        <div class="tp-day-num"><?php echo $day_num; ?></div>
-                        <?php if ( ! $is_last ) : ?>
-                        <div class="tp-day-line"></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="tp-day-content">
-                        <div class="tp-day-header">
-                            <h3 class="tp-day-title"><?php echo esc_html( $day['title'] ); ?></h3>
-                            <?php if ( $day['duration'] ) : ?>
-                            <span class="tp-chip">⏱ <?php echo esc_html( $day['duration'] ); ?></span>
-                            <?php endif; ?>
-                            <?php if ( $day['altitude'] ) : ?>
-                            <span class="tp-chip tp-chip-altitude">⛰ <?php echo esc_html( $day['altitude'] ); ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <?php if ( $day['desc'] ) : ?>
-                        <p class="tp-day-body"><?php echo esc_html( $day['desc'] ); ?></p>
-                        <?php endif; ?>
-                        <?php if ( $day['photo'] ) : ?>
-                        <div class="tp-day-photo">
-                            <img src="<?php echo esc_url( $day['photo'] ); ?>"
-                                alt="<?php echo esc_html( $day['title'] ); ?>"
-                                onclick="openTripLightbox('<?php echo esc_url( $day['photo'] ); ?>')">
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <?php endif; ?>
         <!-- INCLUDES & EXCLUDES -->
         <?php if ( $includes || $excludes ) : ?>
         <section id="tp-includes" class="tp-section">
@@ -462,6 +417,76 @@ $diff_badge = $diff_colors[ $difficulty ] ?? 'badge-amber';
                 </div>
                 <?php endif; ?>
             </div>
+        </section>
+        <?php endif; ?>
+
+        <!-- ITINERARY -->
+        <?php if ( ! empty( $days ) ) : ?>
+        <section id="tp-itinerary" class="tp-section">
+            <div class="tp-section-divider"></div>
+            <p class="tp-section-label">Day by Day</p>
+            <h2 class="tp-section-title">Full Itinerary</h2>
+
+            <!-- Itinerary controls -->
+        <div class="tp-itin-controls">
+            <button class="tp-itin-ctrl-btn" id="tpExpandAll">Expand All</button>
+            <button class="tp-itin-ctrl-btn" id="tpCollapseAll">Collapse All</button>
+        </div>
+
+        <div class="tp-timeline">
+            <?php foreach ( $days as $idx => $day ) :
+                $day_num = $idx + 1;
+                $is_last = $idx === count( $days ) - 1;
+                $is_open = $idx === 0; // First day open by default
+            ?>
+            <div class="tp-day-item tp-day-accordion <?php echo $is_open ? 'is-open' : ''; ?>">
+                <div class="tp-day-spine">
+                    <div class="tp-day-num"><?php echo $day_num; ?></div>
+                    <?php if ( ! $is_last ) : ?>
+                    <div class="tp-day-line"></div>
+                    <?php endif; ?>
+                </div>
+                <div class="tp-day-content">
+                    <!-- Clickable header -->
+                    <button class="tp-day-header tp-day-toggle" aria-expanded="<?php echo $is_open ? 'true' : 'false'; ?>">
+                        <div class="tp-day-header-left">
+                            <h3 class="tp-day-title"><?php echo esc_html( $day['title'] ); ?></h3>
+                            <div class="tp-day-chips-row">
+                                <?php if ( $day['duration'] ) : ?>
+                                <span class="tp-chip">⏱ <?php echo esc_html( $day['duration'] ); ?></span>
+                                <?php endif; ?>
+                                <?php if ( $day['altitude'] ) : ?>
+                                <span class="tp-chip tp-chip-altitude">⛰ <?php echo esc_html( $day['altitude'] ); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <span class="tp-day-toggle-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <!-- Collapsible body -->
+                    <div class="tp-day-body-wrap">
+                        <?php if ( $day['desc'] ) : ?>
+                        <div class="tp-day-body">
+                            <?php echo wpautop( wp_kses_post( $day['desc'] ) ); ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ( $day['photo'] ) : ?>
+                        <div class="tp-day-photo">
+                            <img src="<?php echo esc_url( $day['photo'] ); ?>"
+                                alt="<?php echo esc_html( $day['title'] ); ?>"
+                                onclick="openTripLightbox('<?php echo esc_url( $day['photo'] ); ?>')">
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
         </section>
         <?php endif; ?>
 

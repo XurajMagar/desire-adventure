@@ -364,3 +364,40 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
         setTimeout(drawAltitudeChart, 300);
     }
 }
+// ============================================
+// ITINERARY ACCORDION
+// ============================================
+var dayItems = document.querySelectorAll('.tp-day-accordion');
+var expandAllBtn = document.getElementById('tpExpandAll');
+var collapseAllBtn = document.getElementById('tpCollapseAll');
+
+dayItems.forEach(function(item) {
+    var toggle = item.querySelector('.tp-day-toggle');
+    if (!toggle) return;
+
+    toggle.addEventListener('click', function() {
+        var isOpen = item.classList.contains('is-open');
+        item.classList.toggle('is-open', !isOpen);
+        toggle.setAttribute('aria-expanded', !isOpen);
+    });
+});
+
+if (expandAllBtn) {
+    expandAllBtn.addEventListener('click', function() {
+        dayItems.forEach(function(item) {
+            item.classList.add('is-open');
+            var toggle = item.querySelector('.tp-day-toggle');
+            if (toggle) toggle.setAttribute('aria-expanded', 'true');
+        });
+    });
+}
+
+if (collapseAllBtn) {
+    collapseAllBtn.addEventListener('click', function() {
+        dayItems.forEach(function(item) {
+            item.classList.remove('is-open');
+            var toggle = item.querySelector('.tp-day-toggle');
+            if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+}

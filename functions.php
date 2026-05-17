@@ -709,7 +709,13 @@ function desire_save_trip_meta( $post_id ) {
             }
             if ( isset( $_POST["trip_day_{$d}_desc"] ) ) {
                 update_post_meta( $post_id, "_trip_day_{$d}_desc",
-                    sanitize_textarea_field( $_POST["trip_day_{$d}_desc"] ) );
+                    wp_kses( $_POST["trip_day_{$d}_desc"], array(
+                        'a'      => array( 'href' => array(), 'title' => array(), 'target' => array() ),
+                        'strong' => array(),
+                        'em'     => array(),
+                        'br'     => array(),
+                    ) )
+                );
             }
             if ( isset( $_POST["trip_day_{$d}_photo"] ) ) {
                 update_post_meta( $post_id, "_trip_day_{$d}_photo",
@@ -900,7 +906,7 @@ function desire_adventure_assets() {
     // 1. Google Fonts
     wp_enqueue_style(
         'desire-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=DM+Sans:wght@300;400;500;700&display=swap',
         array(),
         null
     );
