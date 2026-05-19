@@ -23,8 +23,8 @@
 
     <?php 
         $slide_style = $hero_video 
-            ? '' 
-            : 'background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(' . esc_url($hero_img) . ');';
+    ? '' 
+    : 'background-image: url(' . esc_url($hero_img) . ');';
         ?>
         <div class="hero-slide" style="<?php echo $slide_style; ?>">
         <div class="hero-content">

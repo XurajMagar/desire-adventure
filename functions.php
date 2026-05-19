@@ -167,6 +167,14 @@ function desire_adventure_add_trip_meta_boxes() {
         'side',
         'high'
     );
+    add_meta_box(
+        'trip_more_details',
+        '📝 More Details',
+        'desire_trip_more_details_callback',
+        'trips',
+        'normal',
+        'default'
+    );
     //Trip Badge
     add_meta_box(
         'trip_badges',
@@ -260,7 +268,7 @@ function desire_adventure_add_trip_meta_boxes() {
     // FAQs
     add_meta_box(
         'trip_faqs',
-        'Trip FAQs (up to 6)',
+        'Trip FAQs (up to 20)',
         'desire_trip_faqs_callback',
         'trips',
         'normal',
@@ -574,25 +582,103 @@ function desire_trip_map_callback( $post ) {
 
 // --- Callback: FAQs ---
 function desire_trip_faqs_callback( $post ) {
+    $saved_count = 0;
+    for ( $f = 1; $f <= 20; $f++ ) {
+        if ( get_post_meta( $post->ID, "_trip_faq_{$f}_q", true ) ) {
+            $saved_count = $f;
+        }
+    }
+    if ( $saved_count === 0 ) $saved_count = 3;
     ?>
-    <p style="color:#666;font-size:12px;margin-bottom:15px">Leave blank to hide that FAQ.</p>
-    <?php
-    for ( $f = 1; $f <= 6; $f++ ) :
-        $q = get_post_meta( $post->ID, "_trip_faq_{$f}_q", true );
-        $a = get_post_meta( $post->ID, "_trip_faq_{$f}_a", true );
+    <p style="color:#666;font-size:12px;margin-bottom:15px">
+        Add up to 20 FAQs. Leave blank to hide.
+    </p>
+
+    <div id="tp-faq-container">
+        <?php for ( $f = 1; $f <= $saved_count; $f++ ) :
+            $q = get_post_meta( $post->ID, "_trip_faq_{$f}_q", true );
+            $a = get_post_meta( $post->ID, "_trip_faq_{$f}_a", true );
+            $bg = $f % 2 === 0 ? '#f9f9f9' : '#fff';
         ?>
-        <div style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-bottom:10px;background:#fafafa">
-            <strong style="color:#666;font-size:12px">FAQ <?php echo $f; ?></strong>
-            <input type="text" name="trip_faq_<?php echo $f; ?>_q"
+        <div class="tp-faq-row" style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-bottom:10px;background:<?php echo $bg; ?>">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <strong style="color:#1A2E20;font-size:12px">FAQ <?php echo $f; ?></strong>
+                <?php if ( $f > 1 ) : ?>
+                <button type="button" class="tp-remove-faq button"
+                        style="color:#c0392b;border-color:#c0392b;padding:2px 8px;font-size:11px">✕ Remove</button>
+                <?php endif; ?>
+            </div>
+            <input type="text"
+                   name="trip_faq_<?php echo $f; ?>_q"
                    placeholder="Question..."
-                   value="<?php echo esc_attr( $q ); ?>" style="width:100%;margin:8px 0">
+                   value="<?php echo esc_attr( $q ); ?>"
+                   style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:8px">
             <textarea name="trip_faq_<?php echo $f; ?>_a"
                       placeholder="Answer..."
-                      rows="2" style="width:100%"><?php echo esc_textarea( $a ); ?></textarea>
+                      rows="3"
+                      style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;resize:vertical"><?php echo esc_textarea( $a ); ?></textarea>
         </div>
-    <?php endfor;
-}
+        <?php endfor; ?>
+    </div>
 
+    <button type="button" id="tp-add-faq" class="button button-primary" style="margin-top:8px">
+        + Add FAQ
+    </button>
+
+    <script>
+    jQuery(document).ready(function($) {
+        var maxFaq = 20;
+
+        function getCount() {
+            return $('.tp-faq-row').length;
+        }
+
+        function updateNames() {
+            $('.tp-faq-row').each(function(i) {
+                var idx = i + 1;
+                $(this).find('strong').text('FAQ ' + idx);
+                $(this).find('input[name*="_q"]').attr('name', 'trip_faq_' + idx + '_q');
+                $(this).find('textarea[name*="_a"]').attr('name', 'trip_faq_' + idx + '_a');
+                $(this).css('background', idx % 2 === 0 ? '#f9f9f9' : '#fff');
+            });
+        }
+
+        function updateButton() {
+            var count = getCount();
+            $('#tp-add-faq')
+                .prop('disabled', count >= maxFaq)
+                .text(count >= maxFaq ? 'Maximum 20 FAQs reached' : '+ Add FAQ');
+        }
+
+        $('#tp-add-faq').on('click', function() {
+            if (getCount() >= maxFaq) return;
+            var idx = getCount() + 1;
+            var bg = idx % 2 === 0 ? '#f9f9f9' : '#fff';
+            var row = $(
+                '<div class="tp-faq-row" style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-bottom:10px;background:' + bg + '">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+                '<strong style="color:#1A2E20;font-size:12px">FAQ ' + idx + '</strong>' +
+                '<button type="button" class="tp-remove-faq button" style="color:#c0392b;border-color:#c0392b;padding:2px 8px;font-size:11px">✕ Remove</button>' +
+                '</div>' +
+                '<input type="text" name="trip_faq_' + idx + '_q" placeholder="Question..." style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:8px">' +
+                '<textarea name="trip_faq_' + idx + '_a" placeholder="Answer..." rows="3" style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;resize:vertical"></textarea>' +
+                '</div>'
+            );
+            $('#tp-faq-container').append(row);
+            updateButton();
+        });
+
+        $(document).on('click', '.tp-remove-faq', function() {
+            $(this).closest('.tp-faq-row').remove();
+            updateNames();
+            updateButton();
+        });
+
+        updateButton();
+    });
+    </script>
+    <?php
+}
 
 // --- Callback: Booking Details ---
 function desire_trip_booking_callback( $post ) {
@@ -710,10 +796,16 @@ function desire_save_trip_meta( $post_id ) {
             if ( isset( $_POST["trip_day_{$d}_desc"] ) ) {
                 update_post_meta( $post_id, "_trip_day_{$d}_desc",
                     wp_kses( $_POST["trip_day_{$d}_desc"], array(
-                        'a'      => array( 'href' => array(), 'title' => array(), 'target' => array() ),
-                        'strong' => array(),
-                        'em'     => array(),
-                        'br'     => array(),
+                        'a'          => array( 'href' => array(), 'title' => array(), 'target' => array() ),
+                        'strong'     => array(),
+                        'em'         => array(),
+                        'br'         => array(),
+                        'blockquote' => array(),
+                        'p'          => array(),
+                        'ul'         => array(),
+                        'ol'         => array(),
+                        'li'         => array(),
+                        'span'       => array( 'style' => array() ),
                     ) )
                 );
             }
@@ -733,9 +825,14 @@ function desire_save_trip_meta( $post_id ) {
                 );
             }
         }
-
-        // --- FAQs: 6 pairs ---
-        for ( $f = 1; $f <= 6; $f++ ) {
+        // --- More Details ---
+        if ( isset( $_POST['trip_more_details'] ) ) {
+            update_post_meta( $post_id, '_trip_more_details',
+                wp_kses_post( $_POST['trip_more_details'] )
+            );
+        }
+        // --- FAQs: up to 20 ---
+        for ( $f = 1; $f <= 20; $f++ ) {
             if ( isset( $_POST["trip_faq_{$f}_q"] ) ) {
                 update_post_meta(
                     $post_id,
@@ -1264,16 +1361,17 @@ function desire_register_reviews_section( $wp_customize ) {
 }
 add_action( 'customize_register', 'desire_register_reviews_section' );
 function desire_adventure_dynamic_css() {
-    $header_bg   = get_theme_mod( 'desire_header_bg_color', '#000000' );
+    $header_bg = get_theme_mod( 'desire_header_bg_color', '#000000' );
     $header_font = get_theme_mod( 'desire_header_font', 'DM Sans' );
     $is_admin_bar = is_admin_bar_showing();
     $admin_offset = $is_admin_bar ? '32px' : '0px';
     ?>
     <style>
         /* Base header style — all pages */
-        .site-header {
-            background-color: <?php echo esc_attr( $header_bg ); ?>;
-            font-family: '<?php echo esc_attr( $header_font ); ?>', sans-serif;
+        .site-header.is-scrolled {
+            background-color: rgba(10, 10, 10, 0.55) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
         }
 
         <?php if ( is_singular( 'trips' ) ) : ?>
@@ -1896,43 +1994,129 @@ function desire_handle_trip_booking() {
         wp_die( 'Security check failed.' );
     }
 
-    $name      = sanitize_text_field( $_POST['bk_name']       ?? '' );
-    $email     = sanitize_email(      $_POST['bk_email']      ?? '' );
-    $phone     = sanitize_text_field( $_POST['bk_phone']      ?? '' );
-    $country   = sanitize_text_field( $_POST['bk_country']    ?? '' );
-    $exp       = sanitize_text_field( $_POST['bk_experience'] ?? '' );
-    $message   = sanitize_textarea_field( $_POST['bk_message'] ?? '' );
-    $trip_name = sanitize_text_field( $_POST['trip_name']     ?? '' );
-    $date      = sanitize_text_field( $_POST['date']          ?? '' );
-    $end_date  = sanitize_text_field( $_POST['end_date']      ?? '' );
-    $pax       = (int) ( $_POST['pax']  ?? 1 );
-    $type      = sanitize_text_field( $_POST['type'] ?? 'custom' );
+    $name         = sanitize_text_field( $_POST['bk_name']         ?? '' );
+    $email        = sanitize_email(      $_POST['bk_email']        ?? '' );
+    $phone        = sanitize_text_field( $_POST['bk_phone']        ?? '' );
+    $country      = sanitize_text_field( $_POST['bk_country']      ?? '' );
+    $exp          = sanitize_text_field( $_POST['bk_experience']   ?? '' );
+    $message      = sanitize_textarea_field( $_POST['bk_message']  ?? '' );
+    $trip_name    = sanitize_text_field( $_POST['trip_name']       ?? '' );
+    $date         = sanitize_text_field( $_POST['date']            ?? '' );
+    $end_date     = sanitize_text_field( $_POST['end_date']        ?? '' );
+    $pax          = (int) ( $_POST['pax']  ?? 1 );
+    $type         = sanitize_text_field( $_POST['type']            ?? 'custom' );
+    $booking_ref  = sanitize_text_field( $_POST['bk_booking_ref']  ?? '' );
+    $payment_type = sanitize_text_field( $_POST['bk_payment_type'] ?? 'later' );
+    $trip_price   = sanitize_text_field( $_POST['trip_price']      ?? '' );
 
-    $to      = get_option( 'admin_email' );
-    $subject = 'New Booking Request: ' . $trip_name;
-    $body    = "New booking request from your website:\n\n";
-    $body   .= "Type: " . ( $type === 'departure' ? 'Group Departure' : 'Custom Date' ) . "\n";
-    $body   .= "Trip: $trip_name\n";
-    $body   .= "Departure Date: $date\n";
-    if ( $end_date ) $body .= "Return Date: $end_date\n";
-    $body   .= "People: $pax\n\n";
-    $body   .= "Name: $name\n";
-    $body   .= "Email: $email\n";
-    $body   .= "Phone: $phone\n";
-    $body   .= "Country: $country\n";
-    $body   .= "Experience: $exp\n";
-    $body   .= "Message: $message\n";
+    // Calculate amounts
+    $price_num    = (float) preg_replace( '/[^0-9.]/', '', $trip_price );
+    $deposit_amt  = $price_num > 0 ? round( $price_num * 0.25, 2 ) : 0;
+    $total_amt    = $price_num * $pax;
 
-    $headers = array( 'Content-Type: text/plain; charset=UTF-8' );
-    if ( $email ) $headers[] = "Reply-To: {$name} <{$email}>";
+    $payment_label = $payment_type === 'now'
+        ? 'Pay 25% Deposit to Confirm'
+        : 'Book Now Pay Later';
 
-    wp_mail( $to, $subject, $body, $headers );
+    // ── Email to Admin ────────────────────────────
+    $admin_to      = get_theme_mod( 'desire_contact_email', get_option( 'admin_email' ) );
+    $admin_subject = '🏔 New Booking Request: ' . $trip_name . ' [' . $booking_ref . ']';
 
-    // Redirect to thank you
-        wp_safe_redirect( add_query_arg(
-        array( 'type' => 'booking', 'trip' => urlencode( $trip_name ) ),
+    $admin_body  = "NEW BOOKING REQUEST\n";
+    $admin_body .= str_repeat( '─', 50 ) . "\n\n";
+    $admin_body .= "Booking Ref:    {$booking_ref}\n";
+    $admin_body .= "Payment Type:   {$payment_label}\n\n";
+    $admin_body .= "TRIP DETAILS\n";
+    $admin_body .= "Trek:           {$trip_name}\n";
+    $admin_body .= "Type:           " . ( $type === 'departure' ? 'Group Departure' : 'Custom Date' ) . "\n";
+    $admin_body .= "Departure:      {$date}\n";
+    if ( $end_date ) $admin_body .= "Return:         {$end_date}\n";
+    $admin_body .= "People:         {$pax}\n";
+    if ( $trip_price )   $admin_body .= "Price/Person:   {$trip_price}\n";
+    if ( $total_amt > 0 ) $admin_body .= "Total Amount:   USD " . number_format( $total_amt, 0 ) . "\n";
+    if ( $deposit_amt > 0 ) $admin_body .= "25% Deposit:    USD " . number_format( $deposit_amt, 2 ) . "\n";
+    $admin_body .= "\nCUSTOMER DETAILS\n";
+    $admin_body .= "Name:           {$name}\n";
+    $admin_body .= "Email:          {$email}\n";
+    $admin_body .= "Phone:          {$phone}\n";
+    $admin_body .= "Country:        {$country}\n";
+    $admin_body .= "Experience:     {$exp}\n";
+    $admin_body .= "Message:        {$message}\n";
+
+    $admin_headers = array( 'Content-Type: text/plain; charset=UTF-8' );
+    if ( $email ) $admin_headers[] = "Reply-To: {$name} <{$email}>";
+
+    wp_mail( $admin_to, $admin_subject, $admin_body, $admin_headers );
+
+    // ── Confirmation Email to Customer ───────────
+    if ( $email ) {
+        $site_name  = get_bloginfo( 'name' );
+        $site_email = get_theme_mod( 'desire_contact_email', get_option( 'admin_email' ) );
+        $site_phone = get_theme_mod( 'desire_ft_phone', '+977 9851233710' );
+        $site_wa    = get_theme_mod( 'desire_whatsapp_number', '+977 9851233710' );
+
+        $cust_subject = "Booking Request Received — {$trip_name} [{$booking_ref}]";
+
+        $cust_body  = "Dear {$name},\n\n";
+        $cust_body .= "Thank you for choosing {$site_name}! We have received your booking request and will be in touch within 24 hours.\n\n";
+        $cust_body .= str_repeat( '─', 50 ) . "\n";
+        $cust_body .= "BOOKING CONFIRMATION\n";
+        $cust_body .= str_repeat( '─', 50 ) . "\n\n";
+        $cust_body .= "Booking Reference:  {$booking_ref}\n";
+        $cust_body .= "Payment Option:     {$payment_label}\n\n";
+        $cust_body .= "TRIP DETAILS\n";
+        $cust_body .= "Trek:               {$trip_name}\n";
+        $cust_body .= "Departure Date:     {$date}\n";
+        if ( $end_date ) $cust_body .= "Return Date:        {$end_date}\n";
+        $cust_body .= "Number of People:   {$pax}\n";
+        if ( $trip_price )    $cust_body .= "Price per Person:   {$trip_price}\n";
+        if ( $total_amt > 0 ) $cust_body .= "Total Amount:       USD " . number_format( $total_amt, 0 ) . "\n";
+        if ( $deposit_amt > 0 ) {
+            $cust_body .= "Deposit (25%):      USD " . number_format( $deposit_amt, 2 ) . "\n";
+        }
+        $cust_body .= "\nWHAT HAPPENS NEXT\n";
+        $cust_body .= str_repeat( '─', 50 ) . "\n";
+        if ( $payment_type === 'now' ) {
+            $cust_body .= "1. Our team will contact you within 24 hours\n";
+            $cust_body .= "2. We will send payment details for your deposit of USD " . number_format( $deposit_amt, 2 ) . "\n";
+            $cust_body .= "3. Once deposit is received your booking is confirmed\n";
+            $cust_body .= "4. We will send your final booking confirmation and pre-departure pack\n";
+        } else {
+            $cust_body .= "1. Our team will review your request within 24 hours\n";
+            $cust_body .= "2. We will contact you to confirm availability\n";
+            $cust_body .= "3. We will discuss dates, customisation and payment options\n";
+            $cust_body .= "4. Once agreed we send your final booking confirmation\n";
+        }
+        $cust_body .= "\nPLEASE SAVE THIS EMAIL as proof of your booking request.\n";
+        $cust_body .= "Your reference number is: {$booking_ref}\n\n";
+        $cust_body .= str_repeat( '─', 50 ) . "\n";
+        $cust_body .= "CONTACT US\n";
+        $cust_body .= "WhatsApp:  {$site_wa}\n";
+        $cust_body .= "Email:     {$site_email}\n";
+        $cust_body .= "Phone:     {$site_phone}\n\n";
+        $cust_body .= "Warm regards,\n";
+        $cust_body .= "The {$site_name} Team\n";
+        $cust_body .= get_bloginfo( 'url' ) . "\n";
+
+        $cust_headers = array(
+            'Content-Type: text/plain; charset=UTF-8',
+            "From: {$site_name} <{$site_email}>",
+        );
+
+        wp_mail( $email, $cust_subject, $cust_body, $cust_headers );
+    }
+
+    // Redirect to thank you page
+    wp_safe_redirect( add_query_arg(
+        array(
+            'type'    => 'booking',
+            'trip'    => urlencode( $trip_name ),
+            'ref'     => urlencode( $booking_ref ),
+            'payment' => $payment_type,
+            'deposit' => $deposit_amt > 0 ? $deposit_amt : '',
+        ),
         home_url( '/thank-you/' )
-    ) );
+    ));
     exit;
 }
 add_action( 'admin_post_tp_booking',        'desire_handle_trip_booking' );
@@ -1940,10 +2124,12 @@ add_action( 'admin_post_nopriv_tp_booking', 'desire_handle_trip_booking' );
 // register admin js
 function desire_adventure_admin_scripts( $hook ) {
     global $post;
-    // Only load on trip edit/new screens
     if ( ( $hook === 'post.php' || $hook === 'post-new.php' ) &&
          isset( $post ) && $post->post_type === 'trips' ) {
-        wp_enqueue_media(); // WordPress media uploader
+        wp_enqueue_media();
+        wp_enqueue_editor();
+        wp_enqueue_script( 'editor' );
+        wp_enqueue_script( 'quicktags' );
         wp_enqueue_script(
             'desire-admin-itinerary',
             get_template_directory_uri() . '/admin-itinerary.js',
@@ -3331,6 +3517,9 @@ class Desire_Nav_Walker extends Walker_Nav_Menu {
                             <polyline points="6 9 12 15 18 9"/>
                         </svg>';
         }
+        if ( $has_children && $depth > 0 ) {
+            $output .= '<span class="nav-sub-arrow">›</span>';
+        }
         $output .= '</a>';
     }
 
@@ -3338,3 +3527,112 @@ class Desire_Nav_Walker extends Walker_Nav_Menu {
         $output .= '</li>';
     }
 }
+function desire_trip_more_details_callback( $post ) {
+    $more_details = get_post_meta( $post->ID, '_trip_more_details', true );
+    ?>
+    <p style="color:#666;font-size:12px;margin-bottom:12px">
+        Write additional details here — supports paragraphs, headings, lists,
+        blockquotes and links. Shown after the Packing List section on the trip page.
+    </p>
+
+    <textarea id="trip_more_details_tinymce" name="trip_more_details" style="width:100%;min-height:400px;"><?php echo esc_textarea( $more_details ); ?></textarea>
+
+    <script>
+        jQuery(document).ready(function($) {
+            function initEditor() {
+                if (typeof tinymce === 'undefined') {
+                    setTimeout(initEditor, 300);
+                    return;
+                }
+
+                if (tinymce.get('trip_more_details_tinymce')) {
+                    tinymce.get('trip_more_details_tinymce').remove();
+                }
+
+                // Register custom button for TinyMCE 4
+                tinymce.PluginManager.add('wpimage_btn', function(editor) {
+                    editor.addButton('wpimage', {
+                        text: 'Add Media',
+                        icon: 'image',
+                        onclick: function() {
+                            var frame = wp.media({
+                                title: 'Select Image',
+                                button: { text: 'Insert' },
+                                multiple: false,
+                                library: { type: 'image' }
+                            });
+                            frame.on('select', function() {
+                                var attachment = frame.state().get('selection').first().toJSON();
+                                editor.insertContent('<img src="' + attachment.url + '" alt="' + (attachment.alt || '') + '" style="max-width:100%;height:auto;">');
+                                editor.save();
+                            });
+                            frame.open();
+                        }
+                    });
+                });
+
+                tinymce.init({
+                    selector: '#trip_more_details_tinymce',
+                    height: 400,
+                    menubar: false,
+                    statusbar: false,
+                    relative_urls: false,
+                    remove_script_host: false,
+                    convert_urls: false,
+                    document_base_url: '<?php echo esc_url( home_url('/') ); ?>',
+                    plugins: 'lists link paste wpimage_btn',
+                    toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | blockquote | link unlink | wpimage | undo redo',
+                    block_formats: 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4',
+                    setup: function(editor) {
+                        editor.on('change', function() {
+                            editor.save();
+                        });
+                    }
+                });
+            }
+
+            setTimeout(initEditor, 800);
+
+            $('form#post').on('submit', function() {
+                if (tinymce.get('trip_more_details_tinymce')) {
+                    tinymce.get('trip_more_details_tinymce').save();
+                }
+            });
+        });
+        </script>
+    <?php
+}
+// Force classic editor for trips post type
+add_filter( 'use_block_editor_for_post_type', function( $use_block_editor, $post_type ) {
+    if ( $post_type === 'trips' ) {
+        return false;
+    }
+    return $use_block_editor;
+}, 10, 2 );
+// Hide WordPress version
+remove_action( 'wp_head', 'wp_generator' );
+
+// Disable XML-RPC (common attack vector)
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
+// Remove WP version from scripts and styles
+add_filter( 'style_loader_src', function( $src ) {
+    if ( strpos( $src, 'ver=' ) ) {
+        $src = remove_query_arg( 'ver', $src );
+    }
+    return $src;
+});
+
+add_filter( 'script_loader_src', function( $src ) {
+    if ( strpos( $src, 'ver=' ) ) {
+        $src = remove_query_arg( 'ver', $src );
+    }
+    return $src;
+});
+// Add security headers
+add_action( 'send_headers', function() {
+    header( 'X-Content-Type-Options: nosniff' );
+    header( 'X-Frame-Options: SAMEORIGIN' );
+    header( 'X-XSS-Protection: 1; mode=block' );
+    header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+});

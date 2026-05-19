@@ -63,19 +63,9 @@
 <!-- Mobile Drawer -->
 <div class="nav-drawer" id="navDrawer">
     <div class="nav-drawer-header">
-        <div class="nav-drawer-logo">
-            <?php
-            if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
-                the_custom_logo();
-            } else {
-                echo '<a href="' . esc_url( home_url( '/' ) ) . '">'
-                   . esc_html( get_bloginfo( 'name' ) ) . '</a>';
-            }
-            ?>
-        </div>
         <button class="nav-drawer-close" id="navDrawerClose" aria-label="Close menu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>

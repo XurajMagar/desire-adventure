@@ -75,8 +75,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hamburger) hamburger.classList.remove('is-open');
         document.body.style.overflow = '';
     }
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            if (drawer.classList.contains('is-open')) {
+                closeDrawer();
+            } else {
+                openDrawer();
+                setTimeout(initMobileAccordion, 150);
+            }
+        });
+    }
 
-    if (hamburger) hamburger.addEventListener('click', openDrawer);
     if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
     if (overlay) overlay.addEventListener('click', closeDrawer);
 
@@ -84,30 +93,71 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Escape') closeDrawer();
     });
 
-    // Mobile submenu accordion
-    var drawerParents = document.querySelectorAll(
-        '.nav-drawer-menu .menu-item-has-children > a'
-    );
+    // ============================================
+    // MOBILE SUBMENU ACCORDION
+    // ============================================
+    var accordionReady = false;
 
-    drawerParents.forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            var parent = this.parentElement;
-            var isOpen = parent.classList.contains('is-open');
+    function initMobileAccordion() {
+        if (accordionReady) return; // Only run once
+        accordionReady = true;
 
-            // Close all others
-            document.querySelectorAll(
-                '.nav-drawer-menu .menu-item-has-children'
-            ).forEach(function(item) {
-                item.classList.remove('is-open');
-            });
+        var allParents = document.querySelectorAll('#navDrawer .menu-item-has-children');
 
-            // Toggle clicked one
-            if (!isOpen) {
-                parent.classList.add('is-open');
-                e.preventDefault();
+        allParents.forEach(function(parent) {
+            var link = parent.querySelector(':scope > a');
+            if (!link) return;
+
+            // Add arrow only if not already added
+            if (!link.querySelector('.mob-arrow')) {
+                var arrow = document.createElement('span');
+                arrow.className = 'mob-arrow';
+                arrow.textContent = '›';
+                arrow.style.cssText = 'margin-left:auto;transition:transform 0.3s;display:inline-block;color:#C17F3A;font-size:18px;padding-left:8px;flex-shrink:0;';
+                link.style.display = 'flex';
+                link.style.justifyContent = 'space-between';
+                link.style.alignItems = 'center';
+                link.appendChild(arrow);
             }
+
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var submenu = parent.querySelector(':scope > .sub-menu');
+                if (!submenu) return;
+
+                var isOpen = parent.classList.contains('mob-open');
+
+                // Close siblings at same level
+                var siblings = parent.parentElement.querySelectorAll(':scope > .menu-item-has-children');
+                siblings.forEach(function(sib) {
+                    if (sib !== parent) {
+                        sib.classList.remove('mob-open');
+                        var sibSub = sib.querySelector(':scope > .sub-menu');
+                        if (sibSub) sibSub.style.maxHeight = '0';
+                        var sibArrow = sib.querySelector(':scope > a .mob-arrow');
+                        if (sibArrow) sibArrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                // Toggle current
+                if (isOpen) {
+                    parent.classList.remove('mob-open');
+                    submenu.style.maxHeight = '0';
+                    link.querySelector('.mob-arrow').style.transform = 'rotate(0deg)';
+                } else {
+                    parent.classList.add('mob-open');
+                    submenu.style.maxHeight = submenu.scrollHeight + 500 + 'px';
+                    link.querySelector('.mob-arrow').style.transform = 'rotate(90deg)';
+                }
+            });
         });
-    });
+    }
+
+    // Single hamburger click handler
+    // Also run on load in case drawer is already open
+    initMobileAccordion();
     // ============================================
     // TABLE OF CONTENTS — Auto-build from headings
     // ============================================

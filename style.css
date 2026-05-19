@@ -32,13 +32,24 @@ body {
    ============================================================ */
 
 .site-header {
-    background: #0d0d0d;
+    background: transparent;
     height: 70px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 9999;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.site-header.is-scrolled {
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -52,7 +63,7 @@ body.home .site-header {
 }
 
 body.home {
-    padding-top: 70px;
+    padding-top: 0px;
 }
 
 
@@ -256,6 +267,100 @@ body.home {
 }
 
 
+/* ── NESTED DROPDOWN — flyout to right ── */
+
+
+/* The nested dropdown */
+
+.nav-dropdown .nav-item--has-children {
+    position: relative;
+}
+
+.nav-dropdown .nav-item--has-children>.nav-dropdown {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-left: 8px;
+    transform: translateX(6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    /* Reset parent centering */
+    left: 100% !important;
+    transform: translateX(6px) !important;
+}
+
+
+/* Show nested dropdown on hover */
+
+.nav-dropdown .nav-item--has-children:hover>.nav-dropdown {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0) !important;
+}
+
+
+/* Remove the arrow pip from nested dropdowns */
+
+.nav-dropdown .nav-dropdown::before {
+    display: none;
+}
+
+
+/* Arrow indicator showing item has children */
+
+.nav-dropdown .nav-item--has-children>.nav-dropdown-link::after {
+    content: '›';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #C17F3A;
+    line-height: 1;
+}
+
+
+/* Make room for the arrow */
+
+.nav-dropdown .nav-item--has-children>.nav-dropdown-link {
+    position: relative;
+    padding-right: 28px;
+}
+
+
+/* Hover bridge for nested — fills gap between item and flyout */
+
+.nav-dropdown .nav-item--has-children::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 12px;
+    height: 100%;
+    /* Override parent bridge */
+    right: auto;
+}
+
+
+/* Sub arrow for nested items */
+
+.nav-sub-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #C17F3A;
+    line-height: 1;
+}
+
+
+/* Remove ::after arrow since we use span now */
+
+.nav-dropdown .nav-item--has-children>.nav-dropdown-link::after {
+    display: none;
+}
+
+
 /* --- Header Right --- */
 
 .header-right {
@@ -404,40 +509,27 @@ body.home {
 .nav-drawer-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    flex-shrink: 0;
-}
-
-.nav-drawer-logo a {
-    color: #C17F3A;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.nav-drawer-logo .custom-logo {
-    max-height: 36px;
-    width: auto;
+    justify-content: flex-end;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav-drawer-close {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     padding: 6px;
     border-radius: 6px;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
-    transition: color 0.2s, background 0.2s;
+    justify-content: center;
 }
 
 .nav-drawer-close:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 
@@ -595,7 +687,9 @@ body.home {
 }
 
 .hero-slide {
-    position: absolute;
+    position: relative;
+    width: 100%;
+    height: 100%;
     inset: 0;
     background-size: cover;
     background-position: center center;
@@ -696,8 +790,14 @@ body.home {
 /* Ensure content stays on top */
 
 .hero-content {
-    position: relative;
-    z-index: 10;
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
+    z-index: 2;
 }
 
 
@@ -12370,4 +12470,538 @@ body {
 
 .tp-day-body a:hover {
     color: var(--tp-accent);
+}
+
+
+/* ── ITINERARY NOTE / BLOCKQUOTE ─────────────── */
+
+.tp-day-body blockquote {
+    background: #FDF8F2;
+    border-left: 4px solid #C17F3A;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #5a5040;
+    line-height: 1.7;
+    font-style: normal;
+}
+
+.tp-day-body blockquote::before {
+    content: '📌 Note: ';
+    font-weight: 700;
+    color: #C17F3A;
+    font-style: normal;
+}
+
+
+/* ============================================================
+   MORE DETAILS SECTION
+   ============================================================ */
+
+.tp-more-details-content {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--tp-muted);
+    max-width: 680px;
+}
+
+.tp-more-details-content p {
+    margin-bottom: 18px;
+}
+
+.tp-more-details-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--tp-text);
+    margin: 32px 0 14px;
+    line-height: 1.2;
+}
+
+.tp-more-details-content h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--tp-text);
+    margin: 24px 0 10px;
+}
+
+.tp-more-details-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--tp-text);
+    margin: 20px 0 8px;
+}
+
+.tp-more-details-content ul,
+.tp-more-details-content ol {
+    padding-left: 22px;
+    margin-bottom: 18px;
+}
+
+.tp-more-details-content li {
+    margin-bottom: 8px;
+    line-height: 1.7;
+}
+
+.tp-more-details-content blockquote {
+    background: #FDF8F2;
+    border-left: 4px solid #C17F3A;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #5a5040;
+    line-height: 1.7;
+}
+
+.tp-more-details-content a {
+    color: var(--tp-forest);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+}
+
+.tp-more-details-content a:hover {
+    color: var(--tp-accent);
+}
+
+.tp-more-details-content strong {
+    color: var(--tp-text);
+    font-weight: 600;
+}
+
+.tp-more-details-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.tp-more-details-content th {
+    background: #1A2E20;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.tp-more-details-content td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--tp-stone);
+    color: var(--tp-muted);
+}
+
+.tp-more-details-content tr:hover td {
+    background: var(--tp-snow);
+}
+
+.tp-more-details-content img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 10px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ============================================================
+   BOOKING PAGE — Payment Option + Ref Badge
+   ============================================================ */
+
+
+/* Booking ref badge in summary */
+
+.bk-ref-badge {
+    background: #1A2E20;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bk-ref-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.bk-ref-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #C17F3A;
+    letter-spacing: 1px;
+}
+
+
+/* Deposit row */
+
+.bk-deposit-row {
+    background: #FDF8F2;
+    border-radius: 6px;
+    padding: 10px 14px !important;
+    margin: 4px 0;
+}
+
+.bk-deposit-val {
+    color: #C17F3A !important;
+    font-size: 16px !important;
+}
+
+
+/* Payment option section */
+
+.bk-payment-option {
+    margin-bottom: 20px;
+}
+
+.bk-payment-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tp-muted);
+    margin-bottom: 10px;
+    display: block;
+}
+
+.bk-payment-choice {
+    display: block;
+    border: 1.5px solid #E8E0D0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.bk-payment-choice:hover {
+    border-color: #1A2E20;
+}
+
+.bk-payment-choice.is-selected {
+    border-color: #1A2E20;
+    background: #F0F7F0;
+}
+
+.bk-payment-choice input[type="radio"] {
+    display: none;
+}
+
+.bk-payment-choice-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.bk-payment-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.bk-payment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bk-payment-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A2E20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.bk-payment-amount {
+    background: #C17F3A;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 700;
+}
+
+.bk-payment-sub {
+    font-size: 12px;
+    color: #6B6558;
+    line-height: 1.5;
+}
+
+.bk-pay-now-notice {
+    background: #FDF8F2;
+    border: 1px solid #E8C97A;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 8px;
+}
+
+.bk-pay-notice-inner {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: #5a4a20;
+    line-height: 1.6;
+}
+
+.bk-pay-notice-inner strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #7A4A0E;
+}
+
+.bk-pay-notice-inner p {
+    margin: 0;
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   THANK YOU PAGE — Updated
+   ============================================================ */
+
+
+/* Booking reference card */
+
+.ty-ref-card {
+    background: #1A2E20;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+}
+
+.ty-ref-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 0;
+}
+
+.ty-ref-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ty-ref-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.ty-ref-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #C17F3A;
+    letter-spacing: 2px;
+}
+
+.ty-ref-note {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 380px;
+    line-height: 1.5;
+}
+
+.ty-ref-copy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.ty-ref-copy:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ty-deposit-notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba(193, 127, 58, 0.15);
+    border: 1px solid rgba(193, 127, 58, 0.3);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.ty-deposit-notice strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #C17F3A;
+}
+
+.ty-deposit-notice p {
+    margin: 0;
+    opacity: 0.75;
+}
+
+
+/* Email notice */
+
+.ty-email-notice {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+    border-left: 4px solid #C17F3A;
+}
+
+.ty-email-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.ty-email-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A2E20;
+    margin-bottom: 4px;
+}
+
+.ty-email-text p {
+    font-size: 13px;
+    color: #6B6558;
+    margin: 0;
+    line-height: 1.6;
+}
+
+@media screen and (max-width: 768px) {
+    .ty-ref-inner {
+        flex-direction: column;
+    }
+    .ty-ref-num {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    /* Level 3 submenu — darker background */
+    #navDrawer .sub-menu .sub-menu {
+        background: rgba(193, 127, 58, 0.08) !important;
+        border-left: 2px solid rgba(193, 127, 58, 0.3) !important;
+        margin-left: 16px !important;
+    }
+    /* Level 3 links */
+    #navDrawer .sub-menu .sub-menu>li>a {
+        padding-left: 24px !important;
+        font-size: 12px !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    }
+    #navDrawer .sub-menu .sub-menu>li>a:hover {
+        color: #C17F3A !important;
+        background: rgba(193, 127, 58, 0.1) !important;
+    }
+    /* Hide walker arrow on mobile — JS adds its own */
+    #navDrawer .nav-sub-arrow {
+        display: none !important;
+    }
+    /* Also hide nav-chevron */
+    #navDrawer .nav-chevron {
+        display: none !important;
+    }
+    /* Hide submenu by default */
+    #navDrawer .sub-menu {
+        display: block !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        transition: max-height 0.35s ease !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: static !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+    #navDrawer .sub-menu::before,
+    #navDrawer .sub-menu::after {
+        display: none !important;
+    }
+    /* Open state */
+    #navDrawer .menu-item-has-children.mob-open>.sub-menu {
+        max-height: 800px !important;
+    }
+    /* Level 2 links */
+    #navDrawer .sub-menu>li>a {
+        padding: 11px 16px 11px 32px !important;
+        font-size: 13px !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-decoration: none !important;
+    }
+    /* Level 3 */
+    #navDrawer .sub-menu .sub-menu>li>a {
+        padding-left: 48px !important;
+        font-size: 12px !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+    }
+    /* Hide desktop chevron on mobile */
+    #navDrawer .nav-chevron {
+        display: none !important;
+    }
+}
+
+
+/* Always hide walker arrow in drawer */
+
+#navDrawer .nav-sub-arrow {
+    display: none !important;
+}
+
+
+/* Remove grey CSS arrow from mobile drawer */
+
+#navDrawer .nav-item--has-children>a::after,
+#navDrawer .menu-item-has-children>a::after,
+#navDrawer li::after {
+    display: none !important;
+    content: none !important;
 }

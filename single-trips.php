@@ -39,6 +39,7 @@ $trip_badge_2 = get_post_meta( get_the_ID(), '_trip_badge_2', true ) ?: '';
 $deposit     = get_post_meta( get_the_ID(), '_trip_deposit',     true ) ?: '';
 $balance_due = get_post_meta( get_the_ID(), '_trip_balance_due', true ) ?: '30 days before departure';
 $price_note  = get_post_meta( get_the_ID(), '_trip_price_note',  true ) ?: '';
+$more_details = get_post_meta( get_the_ID(), '_trip_more_details', true ) ?: '';
 
 // Group discount tiers
 $tiers = array();
@@ -104,7 +105,7 @@ foreach ( $days as $idx => $day ) {
 
 // FAQs
 $faqs = array();
-for ( $f = 1; $f <= 6; $f++ ) {
+for ( $f = 1; $f <= 20; $f++ ) {
     $q = get_post_meta( get_the_ID(), "_trip_faq_{$f}_q", true );
     $a = get_post_meta( get_the_ID(), "_trip_faq_{$f}_a", true );
     if ( $q && $a ) $faqs[] = array( 'q' => $q, 'a' => $a );
@@ -578,10 +579,19 @@ $diff_badge = $diff_colors[ $difficulty ] ?? 'badge-amber';
                 </div>
                 <?php endforeach; ?>
             </div>
-
         </section>
         <?php endif; ?>
-
+        <!-- MORE DETAILS -->
+        <?php if ( $more_details ) : ?>
+        <section id="tp-more-details" class="tp-section">
+            <div class="tp-section-divider"></div>
+            <p class="tp-section-label">Additional Information</p>
+            <h2 class="tp-section-title">More Details</h2>
+            <div class="tp-more-details-content">
+                <?php echo wp_kses_post( $more_details ); ?>
+            </div>
+        </section>
+        <?php endif; ?>
         <!-- GALLERY -->
         <?php if ( count( $gallery ) > 1 ) : ?>
         <section id="tp-gallery" class="tp-section">
