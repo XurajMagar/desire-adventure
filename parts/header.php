@@ -9,6 +9,14 @@
 
 <!-- Mobile Overlay -->
 <div class="nav-overlay" id="navOverlay"></div>
+<!-- Glass Pill Trigger -->
+<div class="header-pill-wrap" id="headerPillWrap">
+    <div class="header-glass-pill" id="headerGlassPill">
+        <span class="hgp-line"></span>
+        <span class="hgp-line"></span>
+        <span class="hgp-line"></span>
+    </div>
+</div>
 
 <header class="site-header" id="siteHeader">
     <div class="header-container">

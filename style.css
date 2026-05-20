@@ -32,31 +32,30 @@ body {
    ============================================================ */
 
 .site-header {
-    background: transparent;
-    height: 70px;
-    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 9999;
-    border-bottom: 1px solid transparent;
-    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    z-index: 1000;
+    height: 70px;
+    background: transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, background 0.3s ease;
 }
 
-.site-header.is-scrolled {
-    background: rgba(10, 10, 10, 0.55);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+.site-header.is-revealed {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
 }
 
 
 /* Fixed on homepage only */
 
 body.home .site-header {
-    position: fixed;
+    /* position: fixed; */
     top: 0;
     left: 0;
     width: 100%;
@@ -88,12 +87,6 @@ body.home {
 
 
 /* Scrolled state */
-
-.site-header.is-scrolled {
-    background: rgba(13, 13, 13, 0.97);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-}
 
 .header-container {
     max-width: 1400px;
@@ -1090,7 +1083,7 @@ body.home {
 
 .region-slider-section {
     width: 100%;
-    padding: 100px 0 150px 0;
+    padding: 60px 0 80px 0;
     background-color: #ffffff;
     position: relative;
     overflow: hidden;
@@ -1099,7 +1092,7 @@ body.home {
 
 .regionSwiper {
     width: 100%;
-    padding: 80px 0 !important;
+    padding: 40px 0 !important;
     /* We keep overflow visible for the slides, 
        but the section above will catch the overflow */
     overflow: visible !important;
@@ -1107,39 +1100,38 @@ body.home {
     /* Improves mobile scrolling performance */
 }
 
-
-/* 2. Slide Dynamics - The "3D Stack" logic */
-
-
-/* Base style for mobile first */
-
 .swiper-slide {
-    width: 85% !important;
-    /* Default for mobile phones */
+    width: 75vw !important;
     max-width: 300px;
-    /* Prevents it from getting too huge on small tablets */
-    height: 400px !important;
+    height: 320px !important;
     transition: all 0.6s ease;
     opacity: 0.5;
     filter: grayscale(40%);
     z-index: 1;
 }
 
-
-/* Side slides: Tucked back and faded */
-
-
-/* Center slide: Popped in front */
-
 .swiper-slide-active {
     opacity: 1;
     filter: grayscale(0%);
     z-index: 10 !important;
-    /* Forces it to the front */
 }
 
 
-/* Desktop Adjustment (Screens wider than 992px) */
+/* Tablet */
+
+@media (min-width: 767px) {
+    .swiper-slide {
+        width: 60vw !important;
+        max-width: none !important;
+        height: 300px !important;
+    }
+    .regionSwiper {
+        padding: 20px 0 40px !important;
+    }
+}
+
+
+/* Desktop */
 
 @media (min-width: 992px) {
     .swiper-slide {
@@ -1151,12 +1143,6 @@ body.home {
         font-size: 3.8rem;
     }
 }
-
-
-/* 3. The Card and Image */
-
-
-/* 1. Ensure the card is a solid container */
 
 .region-card {
     position: relative;
@@ -13173,4 +13159,172 @@ body.single-trips .site-header {
     position: absolute !important;
     top: 0 !important;
     background: transparent !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+
+/* ============================================================
+   GLASS PILL TRIGGER + HOVER HEADER
+   ============================================================ */
+
+.header-pill-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.header-glass-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 32px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: none;
+    border-radius: 0 0 36px 36px;
+    cursor: pointer;
+    pointer-events: auto;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s ease;
+}
+
+.header-glass-pill:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.hgp-line {
+    display: block;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 2px;
+    transition: width 0.2s ease, background 0.2s ease;
+}
+
+.hgp-line:nth-child(1) {
+    width: 22px;
+}
+
+.hgp-line:nth-child(2) {
+    width: 15px;
+}
+
+.hgp-line:nth-child(3) {
+    width: 8px;
+}
+
+.header-glass-pill:hover .hgp-line {
+    width: 22px;
+    background: #fff;
+}
+
+
+/* Pill hides when header is revealed */
+
+.header-pill-wrap.is-hidden {
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+}
+
+
+/* Hide pill on single-trips (has its own subnav) */
+
+body.single-trips .header-pill-wrap {
+    display: none;
+}
+
+
+/* Nav links — dark when header is revealed */
+
+.site-header.is-revealed .main-nav a,
+.site-header.is-revealed .nav-menu a {
+    color: #1A2E20;
+}
+
+.site-header.is-revealed .header-wa-btn {
+    color: #1A2E20;
+    /* WhatsApp button keeps white text on green bg */
+}
+
+.site-header.is-revealed .header-wa-btn:hover {
+    color: #25D366;
+}
+
+
+/* Nav links — white when transparent/scrolled */
+
+.site-header:not(.is-revealed) .main-nav a,
+.site-header:not(.is-revealed) .nav-menu a {
+    color: #ffffff;
+}
+
+
+/* Dropdown submenu — white background when header is revealed */
+
+
+/* Dropdown — white background when header is revealed */
+
+.site-header.is-revealed .nav-dropdown {
+    background: #ffffff;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.site-header.is-revealed .nav-dropdown::before {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.site-header.is-revealed .nav-dropdown-link {
+    color: #1A2E20 !important;
+}
+
+.site-header.is-revealed .nav-dropdown-link:hover {
+    background: #f5f5f5 !important;
+    color: #C17F3A !important;
+}
+
+.site-header.is-revealed .nav-sub-arrow {
+    color: #C17F3A;
+}
+
+@media (max-width: 1024px) {
+    .site-header {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: transparent;
+    }
+    .site-header.is-revealed {
+        background: rgba(255, 255, 255, 0.96);
+    }
+}
+
+@media (max-width: 1024px) {
+    .header-pill-wrap {
+        display: none;
+    }
+    .site-header {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: transparent;
+    }
+}
+
+@media (max-width: 639px) {
+    .swiper-slide {
+        width: 85vw !important;
+        max-width: none !important;
+        height: 320px !important;
+        opacity: 1 !important;
+        filter: grayscale(0%) !important;
+    }
 }

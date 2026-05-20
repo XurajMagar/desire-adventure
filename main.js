@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             effect: 'coverflow',
             centeredSlides: true,
             loop: true,
+            slideToClickedSlide: true,
             coverflowEffect: {
                 rotate: 0,
                 stretch: 80,
@@ -32,16 +33,34 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             breakpoints: {
                 320: {
-                    slidesPerView: 1.2,
-                    coverflowEffect: { stretch: 10 }
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    coverflowEffect: { stretch: 0, depth: 0, modifier: 0 }
+                },
+                480: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    coverflowEffect: { stretch: 0, depth: 0, modifier: 0 }
+                },
+                640: {
+                    slidesPerView: 1.6,
+                    spaceBetween: 0,
+                    coverflowEffect: { stretch: 40, depth: 120 }
                 },
                 768: {
+                    slidesPerView: 1.8,
+                    spaceBetween: 0,
+                    coverflowEffect: { stretch: 60, depth: 150 }
+                },
+                992: {
                     slidesPerView: 'auto',
-                    coverflowEffect: { stretch: 100 }
+                    spaceBetween: 0,
+                    coverflowEffect: { stretch: 150, depth: 200 }
                 },
                 1200: {
                     slidesPerView: 'auto',
-                    coverflowEffect: { stretch: 250 }
+                    spaceBetween: 0,
+                    coverflowEffect: { stretch: 250, depth: 200 }
                 }
             },
             navigation: {
@@ -254,10 +273,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Scrolled header shadow
-    if (header) {
-        window.addEventListener('scroll', function() {
-            header.classList.toggle('is-scrolled', window.scrollY > 50);
-        }, { passive: true });
+    // ============================================
+    // GLASS PILL HOVER HEADER
+    // ============================================
+    var pillWrap = document.getElementById('headerPillWrap');
+    var glassPill = document.getElementById('headerGlassPill');
+
+    if (pillWrap && header) {
+        // Show header on pill hover
+        glassPill.addEventListener('mouseenter', function() {
+            header.classList.add('is-revealed');
+            pillWrap.classList.add('is-hidden');
+        });
+
+        // Hide header when mouse leaves header
+        header.addEventListener('mouseleave', function() {
+            header.classList.remove('is-revealed');
+            pillWrap.classList.remove('is-hidden');
+        });
+
+        // Keep header visible when mouse moves from pill to header
+        header.addEventListener('mouseenter', function() {
+            header.classList.add('is-revealed');
+            pillWrap.classList.add('is-hidden');
+        });
     }
+
+    // Scrolled header shadow
 
 });
