@@ -43,24 +43,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     coverflowEffect: { stretch: 0, depth: 0, modifier: 0 }
                 },
                 640: {
-                    slidesPerView: 1.6,
+                    slidesPerView: 1.8,
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 40, depth: 120 }
+                    coverflowEffect: { stretch: 60, depth: 150, modifier: 1 }
                 },
                 768: {
                     slidesPerView: 1.8,
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 60, depth: 150 }
+                    coverflowEffect: { stretch: 80, depth: 180, modifier: 1 }
                 },
                 992: {
                     slidesPerView: 'auto',
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 150, depth: 200 }
+                    coverflowEffect: { stretch: 150, depth: 200, modifier: 1 }
                 },
                 1200: {
                     slidesPerView: 'auto',
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 250, depth: 200 }
+                    coverflowEffect: { stretch: 250, depth: 200, modifier: 1 }
                 }
             },
             navigation: {
