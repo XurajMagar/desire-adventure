@@ -807,7 +807,7 @@ body.home {
 .ft-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(10, 18, 10, 0.72);
+    background: #0f5a43;
     z-index: 0;
 }
 
