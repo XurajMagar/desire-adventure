@@ -1,5 +1,5 @@
 <section class="region-slider-section" id="section-regions">
-    <div class="container-fluid">
+    <div class="container-fluid" style="overflow: hidden; width: 100%;">
         <div class="section-intro">
             <span class="eyebrow"><?php echo esc_html( get_theme_mod( 'desire_region_eyebrow', 'Explore Nepal' ) ); ?></span>
             <h2><?php echo esc_html( get_theme_mod( 'desire_region_title', 'Find Your Region' ) ); ?></h2>

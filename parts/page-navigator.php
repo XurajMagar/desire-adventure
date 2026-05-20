@@ -28,17 +28,17 @@ if ( ! is_front_page() ) return;
             <span class="page-nav-name">Regions</span>
             <span class="page-nav-num">03</span>
         </a>
+        
+        <a class="page-nav-item" href="#section-packages" data-section="section-packages">
+            <span class="page-nav-dot"></span>
+            <span class="page-nav-name">Packages</span>
+            <span class="page-nav-num">05</span>
+        </a>
 
         <a class="page-nav-item" href="#section-why" data-section="section-why">
             <span class="page-nav-dot"></span>
             <span class="page-nav-name">Why Choose Us</span>
             <span class="page-nav-num">04</span>
-        </a>
-
-        <a class="page-nav-item" href="#section-packages" data-section="section-packages">
-            <span class="page-nav-dot"></span>
-            <span class="page-nav-name">Packages</span>
-            <span class="page-nav-num">05</span>
         </a>
 
         <div class="page-nav-divider"></div>
