@@ -258,7 +258,7 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
                 var cp = (ax + bx) / 2;
                 ctx.bezierCurveTo(cp, ay, cp, by, bx, by);
             }
-            ctx.strokeStyle = '#2D4A35';
+            ctx.strokeStyle = '#0d4a38';
             ctx.lineWidth = 2.5;
             ctx.stroke();
 
@@ -270,7 +270,7 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
                 // Dot
                 ctx.beginPath();
                 ctx.arc(px, py, 5, 0, Math.PI * 2);
-                ctx.fillStyle = '#C17F3A';
+                ctx.fillStyle = '#c99b2d';
                 ctx.strokeStyle = '#fff';
                 ctx.lineWidth = 2;
                 ctx.fill();
@@ -290,7 +290,7 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
             if (!tooltipEl) {
                 tooltipEl = document.createElement('div');
                 tooltipEl.className = 'tp-chart-tooltip';
-                tooltipEl.style.cssText = 'position:absolute;background:#1A2E20;color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:10;max-width:180px;line-height:1.5';
+                tooltipEl.style.cssText = 'position:absolute;background:#0f5a43;color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:10;max-width:180px;line-height:1.5';
                 canvas.parentElement.style.position = 'relative';
                 canvas.parentElement.appendChild(tooltipEl);
             }
@@ -315,9 +315,9 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
                         .replace(/^Day\s*\d+[\s:\-–]+/i, '')
                         .substring(0, 50);
 
-                    tooltipEl.innerHTML = '<strong style="color:#C17F3A">Day ' + closest.point.day + '</strong><br>' +
+                    tooltipEl.innerHTML = '<strong style="color:#c99b2d">Day ' + closest.point.day + '</strong><br>' +
                         '<span style="font-size:11px;opacity:0.85">' + cleanTitle + '</span><br>' +
-                        '<span style="color:#C17F3A;font-weight:700">' + closest.point.altitude + 'm</span>';
+                        '<span style="color:#c99b2d;font-weight:700">' + closest.point.altitude + 'm</span>';
                     tooltipEl.style.opacity = '1';
 
                     var tooltipW = tooltipEl.offsetWidth || 160;

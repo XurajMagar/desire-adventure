@@ -1504,7 +1504,7 @@ if ( count( $related_trips ) < 3 ) {
                 <div class="tp-print-inc-grid">
                     <?php if ( $includes ) : ?>
                     <div class="tp-print-inc-col">
-                        <h4 style="color:#1A2E20;margin-bottom:8px">✓ Included</h4>
+                        <h4 style="color:#0f5a43;margin-bottom:8px">✓ Included</h4>
                         <ul>
                             <?php foreach ( explode( "\n", $includes ) as $item ) :
                                 $item = trim( $item );

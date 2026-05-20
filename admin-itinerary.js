@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
         var newIdx = count + 1;
         var row = $('<div class="tp-day-row" style="border:1px solid #ddd;border-radius:6px;padding:14px;margin-bottom:12px;background:#fafafa;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
-            '<strong class="tp-day-label" style="color:#1A2E20">Day ' + newIdx + '</strong>' +
+            '<strong class="tp-day-label" style="color:#0f5a43">Day ' + newIdx + '</strong>' +
             '<button type="button" class="tp-remove-day button" style="color:#c0392b;border-color:#c0392b">Remove</button>' +
             '</div>' +
             '<div style="display:grid;grid-template-columns:1fr 130px 130px;gap:8px;margin-bottom:8px">' +

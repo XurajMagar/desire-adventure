@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var arrow = document.createElement('span');
                 arrow.className = 'mob-arrow';
                 arrow.textContent = '›';
-                arrow.style.cssText = 'margin-left:auto;transition:transform 0.3s;display:inline-block;color:#C17F3A;font-size:18px;padding-left:8px;flex-shrink:0;';
+                arrow.style.cssText = 'margin-left:auto;transition:transform 0.3s;display:inline-block;color:#c99b2d;font-size:18px;padding-left:8px;flex-shrink:0;';
                 link.style.display = 'flex';
                 link.style.justifyContent = 'space-between';
                 link.style.alignItems = 'center';

@@ -450,22 +450,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 '* { margin:0; padding:0; box-sizing:border-box; }' +
                 'body { font-family:"DM Sans",sans-serif; font-size:12pt; line-height:1.6; color:#1C1A17; background:#fff; }' +
                 '.tp-print-doc { max-width:720px; margin:0 auto; padding:30px 40px; }' +
-                '.tp-print-header { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:3px solid #1A2E20; margin-bottom:24px; gap:20px; }' +
-                '.tp-print-logo-text { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#1A2E20; text-transform:uppercase; letter-spacing:1px; }' +
+                '.tp-print-header { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:20px; border-bottom:3px solid #0f5a43; margin-bottom:24px; gap:20px; }' +
+                '.tp-print-logo-text { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#0f5a43; text-transform:uppercase; letter-spacing:1px; }' +
                 '.tp-print-logo img { max-height:55px; width:auto; }' +
-                '.tp-print-title { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#1A2E20; margin-bottom:8px; line-height:1.2; }' +
+                '.tp-print-title { font-family:"Cormorant Garamond",serif; font-size:22pt; font-weight:600; color:#0f5a43; margin-bottom:8px; line-height:1.2; }' +
                 '.tp-print-meta-row { display:flex; flex-wrap:wrap; gap:12px; font-size:10pt; color:#555; }' +
-                '.tp-print-price-block { background:#1A2E20; color:#fff; padding:12px 20px; border-radius:6px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }' +
+                '.tp-print-price-block { background:#0f5a43; color:#fff; padding:12px 20px; border-radius:6px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }' +
                 '.tp-print-price-label { font-size:10pt; opacity:0.6; }' +
-                '.tp-print-price-val { font-family:"Cormorant Garamond",serif; font-size:20pt; font-weight:600; color:#C17F3A; }' +
+                '.tp-print-price-val { font-family:"Cormorant Garamond",serif; font-size:20pt; font-weight:600; color:#c99b2d; }' +
                 '.tp-print-price-pp { font-size:10pt; opacity:0.6; }' +
                 '.tp-print-discount { background:#e74c3c; color:#fff; font-size:9pt; font-weight:700; padding:2px 8px; border-radius:100px; }' +
                 '.tp-print-section { margin-bottom:28px; }' +
-                '.tp-print-section-title { font-family:"Cormorant Garamond",serif; font-size:16pt; font-weight:600; color:#1A2E20; padding-bottom:8px; border-bottom:2px solid #C17F3A; margin-bottom:16px; }' +
+                '.tp-print-section-title { font-family:"Cormorant Garamond",serif; font-size:16pt; font-weight:600; color:#0f5a43; padding-bottom:8px; border-bottom:2px solid #c99b2d; margin-bottom:16px; }' +
                 '.tp-print-content { font-size:11pt; color:#333; line-height:1.7; }' +
                 '.tp-print-content p { margin-bottom:10px; }' +
                 '.tp-print-day { display:flex; gap:16px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; page-break-inside:avoid; }' +
-                '.tp-print-day-num { font-size:10pt; font-weight:700; text-transform:uppercase; color:#fff; background:#1A2E20; padding:4px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; height:fit-content; }' +
+                '.tp-print-day-num { font-size:10pt; font-weight:700; text-transform:uppercase; color:#fff; background:#0f5a43; padding:4px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; height:fit-content; }' +
                 '.tp-print-day-body { flex:1; }' +
                 '.tp-print-day-title { font-size:12pt; font-weight:700; color:#1C1A17; margin-bottom:4px; }' +
                 '.tp-print-day-chips { display:flex; gap:10px; margin-bottom:6px; }' +
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '@media print { body { background:#fff; } .tp-print-day { page-break-inside:avoid; } }' +
                 '</style></head><body>' +
                 '<div style="position:fixed;top:16px;right:16px;z-index:9999;display:flex;gap:8px;">' +
-                '<button onclick="window.print()" style="background:#1A2E20;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Save as PDF</button>' +
+                '<button onclick="window.print()" style="background:#0f5a43;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Save as PDF</button>' +
                 '<button onclick="window.close()" style="background:#eee;color:#333;border:none;padding:10px 20px;border-radius:8px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Close</button>' +
                 '</div>' +
                 '<div class="tp-print-doc">' + printContent + '</div>' +

@@ -106,7 +106,7 @@ $booking_ref = $trek_code . '-' . $date_code . '-' . $unique_num;
 
             <div class="bk-summary-row">
                 <span>Price (per person)</span>
-                <span style="color:#C17F3A;font-weight:700"><?php echo esc_html( $trip_price ); ?></span>
+                <span style="color:#c99b2d;font-weight:700"><?php echo esc_html( $trip_price ); ?></span>
             </div>
 
             <?php if ( $total_amt > 0 ) : ?>

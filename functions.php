@@ -377,7 +377,7 @@ function desire_trip_itinerary_callback( $post ) {
             ?>
             <div class="tp-day-row" style="border:1px solid #ddd;border-radius:6px;padding:14px;margin-bottom:12px;background:#fafafa">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                    <strong class="tp-day-label" style="color:#1A2E20">Day <?php echo $d; ?></strong>
+                    <strong class="tp-day-label" style="color:#0f5a43">Day <?php echo $d; ?></strong>
                     <?php if ( $d > 1 ) : // Don't allow removing day 1 ?>
                     <button type="button" class="tp-remove-day button" style="color:#c0392b;border-color:#c0392b">Remove</button>
                     <?php endif; ?>
@@ -430,7 +430,7 @@ function desire_trip_inc_exc_callback( $post ) {
     ?>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
         <div>
-            <p><strong style="color:#1A2E20">✓ Included</strong></p>
+            <p><strong style="color:#0f5a43">✓ Included</strong></p>
             <p style="font-size:11px;color:#666;margin:4px 0 8px">One item per line</p>
             <textarea name="trip_includes" rows="8" style="width:100%"
                       placeholder="All permits and entry fees&#10;Accommodation on trail&#10;All meals during trek&#10;Experienced guide&#10;Porter (1 per 2 guests)"><?php echo esc_textarea( $includes ); ?></textarea>
@@ -602,7 +602,7 @@ function desire_trip_faqs_callback( $post ) {
         ?>
         <div class="tp-faq-row" style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-bottom:10px;background:<?php echo $bg; ?>">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <strong style="color:#1A2E20;font-size:12px">FAQ <?php echo $f; ?></strong>
+                <strong style="color:#0f5a43;font-size:12px">FAQ <?php echo $f; ?></strong>
                 <?php if ( $f > 1 ) : ?>
                 <button type="button" class="tp-remove-faq button"
                         style="color:#c0392b;border-color:#c0392b;padding:2px 8px;font-size:11px">✕ Remove</button>
@@ -657,7 +657,7 @@ function desire_trip_faqs_callback( $post ) {
             var row = $(
                 '<div class="tp-faq-row" style="border:1px solid #ddd;border-radius:6px;padding:12px;margin-bottom:10px;background:' + bg + '">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-                '<strong style="color:#1A2E20;font-size:12px">FAQ ' + idx + '</strong>' +
+                '<strong style="color:#0f5a43;font-size:12px">FAQ ' + idx + '</strong>' +
                 '<button type="button" class="tp-remove-faq button" style="color:#c0392b;border-color:#c0392b;padding:2px 8px;font-size:11px">✕ Remove</button>' +
                 '</div>' +
                 '<input type="text" name="trip_faq_' + idx + '_q" placeholder="Question..." style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:8px">' +
@@ -1937,7 +1937,7 @@ function desire_trip_departures_callback( $post ) {
     </p>
     <table style="width:100%;border-collapse:collapse">
         <thead>
-            <tr style="background:#1A2E20;color:#fff">
+            <tr style="background:#0f5a43;color:#fff">
                 <th style="padding:8px 12px;text-align:left;font-size:12px;width:40px">#</th>
                 <th style="padding:8px 12px;text-align:left;font-size:12px">Departure Date</th>
                 <th style="padding:8px 12px;text-align:left;font-size:12px">Return Date</th>
@@ -2299,7 +2299,7 @@ function desire_trip_accommodation_callback( $post ) {
 
     <table style="width:100%;border-collapse:collapse;margin-bottom:12px">
         <thead>
-            <tr style="background:#1A2E20;color:#fff">
+            <tr style="background:#0f5a43;color:#fff">
                 <th style="padding:8px 12px;text-align:left;font-size:12px;width:36px">#</th>
                 <th style="padding:8px 12px;text-align:left;font-size:12px">Icon</th>
                 <th style="padding:8px 12px;text-align:left;font-size:12px">Place / Location</th>
@@ -2627,7 +2627,7 @@ function desire_trip_reviews_callback( $post ) {
         $bg = $r % 2 === 0 ? '#f9f9f9' : '#fff';
     ?>
     <div style="border:1px solid #ddd;border-radius:8px;padding:16px;margin-bottom:12px;background:<?php echo $bg; ?>">
-        <strong style="color:#1A2E20;font-size:13px">Review <?php echo $r; ?></strong>
+        <strong style="color:#0f5a43;font-size:13px">Review <?php echo $r; ?></strong>
         <div style="display:grid;grid-template-columns:1fr 1fr 120px;gap:10px;margin-top:10px">
             <div>
                 <label style="font-size:11px;color:#666;display:block;margin-bottom:4px">Reviewer Name</label>
@@ -2683,7 +2683,7 @@ function desire_trip_reviews_callback( $post ) {
                     <span id="tp-review-preview-<?php echo $r; ?>">
                         <?php if ( $r_photo ) : ?>
                         <img src="<?php echo esc_url( $r_photo ); ?>"
-                             style="height:36px;width:36px;border-radius:50%;object-fit:cover;border:2px solid #C17F3A">
+                             style="height:36px;width:36px;border-radius:50%;object-fit:cover;border:2px solid #c99b2d">
                         <?php endif; ?>
                     </span>
                 </div>
@@ -2711,7 +2711,7 @@ function desire_trip_reviews_callback( $post ) {
                 var attachment = frame.state().get('selection').first().toJSON();
                 $('#' + targetId).val(attachment.url);
                 $('#' + previewId).html(
-                    '<img src="' + attachment.url + '" style="height:36px;width:36px;border-radius:50%;object-fit:cover;border:2px solid #C17F3A">'
+                    '<img src="' + attachment.url + '" style="height:36px;width:36px;border-radius:50%;object-fit:cover;border:2px solid #c99b2d">'
                 );
             });
 
@@ -2743,7 +2743,7 @@ function desire_trip_badges_callback( $post ) {
         Select up to 2 badges. They appear on the hero and all trip cards.
     </p>
 
-    <p style="font-size:11px;font-weight:700;color:#1A2E20;margin-bottom:4px">Badge 1:</p>
+    <p style="font-size:11px;font-weight:700;color:#0f5a43;margin-bottom:4px">Badge 1:</p>
     <select name="trip_badge_1" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:12px">
         <?php foreach ( $badge_options as $val => $label ) : ?>
         <option value="<?php echo esc_attr( $val ); ?>" <?php selected( $badge_1, $val ); ?>>
@@ -2752,7 +2752,7 @@ function desire_trip_badges_callback( $post ) {
         <?php endforeach; ?>
     </select>
 
-    <p style="font-size:11px;font-weight:700;color:#1A2E20;margin-bottom:4px">Badge 2:</p>
+    <p style="font-size:11px;font-weight:700;color:#0f5a43;margin-bottom:4px">Badge 2:</p>
     <select name="trip_badge_2" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:12px">
         <?php foreach ( $badge_options as $val => $label ) : ?>
         <option value="<?php echo esc_attr( $val ); ?>" <?php selected( $badge_2, $val ); ?>>
@@ -2819,33 +2819,33 @@ function desire_trip_price_breakdown_callback( $post ) {
     </p>
 
     <!-- Deposit -->
-    <p style="font-weight:700;font-size:12px;color:#1A2E20;margin-bottom:4px">Deposit to Confirm:</p>
+    <p style="font-weight:700;font-size:12px;color:#0f5a43;margin-bottom:4px">Deposit to Confirm:</p>
     <input type="text" name="trip_deposit"
            value="<?php echo esc_attr( $deposit ); ?>"
            placeholder="e.g. USD 200 per person"
            style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:12px">
 
     <!-- Balance Due -->
-    <p style="font-weight:700;font-size:12px;color:#1A2E20;margin-bottom:4px">Balance Due:</p>
+    <p style="font-weight:700;font-size:12px;color:#0f5a43;margin-bottom:4px">Balance Due:</p>
     <input type="text" name="trip_balance_due"
            value="<?php echo esc_attr( $balance_due ); ?>"
            placeholder="e.g. 30 days before departure"
            style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:12px">
 
     <!-- Price Note -->
-    <p style="font-weight:700;font-size:12px;color:#1A2E20;margin-bottom:4px">Price Note (optional):</p>
+    <p style="font-weight:700;font-size:12px;color:#0f5a43;margin-bottom:4px">Price Note (optional):</p>
     <input type="text" name="trip_price_note"
            value="<?php echo esc_attr( $price_note ); ?>"
            placeholder="e.g. Price includes all permits and meals"
            style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:16px">
 
     <!-- Group Discount Tiers -->
-    <p style="font-weight:700;font-size:12px;color:#1A2E20;margin-bottom:8px">
+    <p style="font-weight:700;font-size:12px;color:#0f5a43;margin-bottom:8px">
         Group Discount Tiers:
     </p>
     <table style="width:100%;border-collapse:collapse;margin-bottom:8px">
         <thead>
-            <tr style="background:#1A2E20;color:#fff">
+            <tr style="background:#0f5a43;color:#fff">
                 <th style="padding:6px 8px;font-size:11px;text-align:left">Group Size</th>
                 <th style="padding:6px 8px;font-size:11px;text-align:left">Price/Person</th>
                 <th style="padding:6px 8px;font-size:11px;text-align:left">Discount</th>
@@ -3154,7 +3154,7 @@ function desire_team_member_callback( $post ) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
 
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Role / Position
             </label>
             <input type="text" name="team_role"
@@ -3164,7 +3164,7 @@ function desire_team_member_callback( $post ) {
         </div>
 
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Years of Experience
             </label>
             <input type="text" name="team_experience"
@@ -3174,7 +3174,7 @@ function desire_team_member_callback( $post ) {
         </div>
 
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Languages Spoken
             </label>
             <input type="text" name="team_languages"
@@ -3184,7 +3184,7 @@ function desire_team_member_callback( $post ) {
         </div>
 
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Notable Treks / Speciality
             </label>
             <input type="text" name="team_treks"
@@ -3196,7 +3196,7 @@ function desire_team_member_callback( $post ) {
     </div>
 
     <div style="margin-bottom:16px">
-        <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+        <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
             Short Bio
         </label>
         <textarea name="team_bio" rows="4"
@@ -3206,7 +3206,7 @@ function desire_team_member_callback( $post ) {
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Facebook URL (optional)
             </label>
             <input type="url" name="team_facebook"
@@ -3215,7 +3215,7 @@ function desire_team_member_callback( $post ) {
                    style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px">
         </div>
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Instagram URL (optional)
             </label>
             <input type="url" name="team_instagram"
@@ -3227,7 +3227,7 @@ function desire_team_member_callback( $post ) {
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Display Order (lower = first)
             </label>
             <input type="number" name="team_order"
@@ -3239,7 +3239,7 @@ function desire_team_member_callback( $post ) {
             </p>
         </div>
         <div>
-            <label style="font-size:11px;font-weight:700;color:#1A2E20;display:block;margin-bottom:4px">
+            <label style="font-size:11px;font-weight:700;color:#0f5a43;display:block;margin-bottom:4px">
                 Photo (alternative to Featured Image)
             </label>
             <div style="display:flex;align-items:center;gap:8px">
@@ -3252,7 +3252,7 @@ function desire_team_member_callback( $post ) {
                 <span id="team-photo-preview">
                     <?php if ( $photo ) : ?>
                     <img src="<?php echo esc_url( $photo ); ?>"
-                         style="height:44px;width:44px;border-radius:50%;object-fit:cover;border:2px solid #C17F3A">
+                         style="height:44px;width:44px;border-radius:50%;object-fit:cover;border:2px solid #c99b2d">
                     <?php endif; ?>
                 </span>
             </div>
@@ -3281,7 +3281,7 @@ function desire_team_member_callback( $post ) {
                 var attachment = frame.state().get('selection').first().toJSON();
                 $('#team-photo-url').val(attachment.url);
                 $('#team-photo-preview').html(
-                    '<img src="' + attachment.url + '" style="height:44px;width:44px;border-radius:50%;object-fit:cover;border:2px solid #C17F3A">'
+                    '<img src="' + attachment.url + '" style="height:44px;width:44px;border-radius:50%;object-fit:cover;border:2px solid #c99b2d">'
                 );
             });
             frame.open();
