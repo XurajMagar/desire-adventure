@@ -28,7 +28,6 @@
         ?>
         <div class="hero-slide" style="<?php echo $slide_style; ?>">
         <div class="hero-content">
-            <span class="hero-subtitle">Desire Adventure</span>
             <h1><?php echo nl2br(esc_html($hero_title)); ?></h1>
             
             <div class="hero-btns">

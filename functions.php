@@ -1276,6 +1276,18 @@ function desire_register_packages_section( $wp_customize ) {
         'posts_per_page' => -1,
         'post_status'    => 'publish',
     ));
+    // Featured Trips Background Image
+    $wp_customize->add_setting( 'desire_trips_bg_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control( new WP_Customize_Image_Control(
+        $wp_customize, 'desire_trips_bg_image_ctrl', array(
+            'label'   => __( 'Featured Trips Background Image', 'desire-adventure' ),
+            'section' => 'desire_featured_packages',
+            'settings' => 'desire_trips_bg_image',
+        )
+    ));
 
     $trip_choices = array( '' => '-- Select a Trip --' );
     foreach ( $trips as $trip ) {
@@ -1375,20 +1387,15 @@ function desire_adventure_dynamic_css() {
         }
 
         <?php if ( is_singular( 'trips' ) ) : ?>
-        /* Single trip page — header scrolls away naturally */
-        /* This overrides the homepage fixed position */
-        .site-header,
-        body.home .site-header {
-            position: relative !important;
-            top: auto !important;
-            box-shadow: none !important;
-        }
+            body.single-trips .site-header {
+                position: absolute !important;
+                top: 0 !important;
+                background: transparent !important;
+            }
 
-        /* Remove the body padding that was added for the fixed header */
-        body,
-        body.home {
-            padding-top: 0 !important;
-        }
+            body.single-trips {
+                padding-top: 0 !important;
+            }
         <?php endif; ?>
     </style>
     <?php

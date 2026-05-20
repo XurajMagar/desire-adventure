@@ -703,6 +703,13 @@ body.home {
 .hero-content {
     max-width: 800px;
     color: #fff;
+    position: absolute;
+    top: 65%;
+    transform: translateX(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
+    z-index: 2;
 }
 
 .hero-subtitle {
@@ -787,27 +794,263 @@ body.home {
 }
 
 
-/* Ensure content stays on top */
-
-.hero-content {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    width: 100%;
-    padding: 0 20px;
-    z-index: 2;
-}
-
-
-/* featured trips part section */
+/* ============================================================
+   FEATURED TRIPS — Magazine Layout
+   ============================================================ */
 
 .featured-trips {
-    background-color: #F5F0E8;
-    /* Light Sand/Cream background */
+    position: relative;
     padding: 100px 5%;
+    background-color: #1A2E20;
+    /* fallback if no image */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
+
+
+/* Dark overlay on top of background image */
+
+.ft-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 18, 10, 0.72);
+    z-index: 0;
+}
+
+
+/* Everything inside sits above the overlay */
+
+.ft-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* Section intro text — white on dark bg */
+
+.ft-section-intro {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 50px;
+}
+
+.ft-section-intro .eyebrow {
+    color: #C17F3A;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 2px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.ft-section-intro h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    margin: 15px 0;
+    color: #ffffff;
+}
+
+.ft-section-intro p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 15px;
+}
+
+
+/* ── Magazine Grid ── */
+
+.ft-magazine-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: repeat(3, 180px);
+    gap: 14px;
+}
+
+
+/* Big card spans all 3 rows on the left */
+
+.ft-card-big {
+    grid-row: 1 / 4;
+}
+
+
+/* ── Card Base ── */
+
+.ft-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ft-card-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    text-decoration: none;
+    position: relative;
+    transition: transform 0.4s ease;
+}
+
+.ft-card:hover .ft-card-inner {
+    transform: scale(1.02);
+}
+
+
+/* Gradient overlay on each card */
+
+.ft-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.85) 100%);
+    transition: background 0.3s ease;
+}
+
+.ft-card:hover .ft-card-overlay {
+    background: linear-gradient( to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+
+/* Content sits at bottom of card */
+
+.ft-card-content {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+}
+
+.ft-card-big .ft-card-content {
+    padding: 30px;
+}
+
+
+/* Difficulty tag */
+
+.ft-card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #C17F3A;
+    border: 1px solid #C17F3A;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+}
+
+
+/* Card title */
+
+.ft-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    text-decoration: none;
+}
+
+.ft-card-big .ft-card-title {
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.ft-card-small .ft-card-title {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+
+/* Price + duration row */
+
+.ft-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.ft-card-price {
+    color: #C17F3A;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ft-card-sep {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.ft-card-duration {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13px;
+}
+
+
+/* CTA link */
+
+.ft-card-cta {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding-bottom: 2px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.ft-card:hover .ft-card-cta {
+    color: #C17F3A;
+    border-color: #C17F3A;
+}
+
+
+/* Small cards hide CTA to keep it clean */
+
+.ft-card-small .ft-card-cta {
+    display: none;
+}
+
+
+/* ── Responsive ── */
+
+@media screen and (max-width: 1024px) {
+    .ft-magazine-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 160px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ft-magazine-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .ft-card-big {
+        grid-row: auto;
+        height: 320px;
+    }
+    .ft-card-small {
+        height: 200px;
+    }
+    .ft-card-small .ft-card-cta {
+        display: inline-block;
+    }
+    .featured-trips {
+        background-attachment: scroll;
+        /* fixed doesn't work well on mobile */
+    }
+}
+
+
+/* ============================================================
+   SHARED SECTION INTRO (used by region slider + others)
+   ============================================================ */
 
 .section-intro {
     text-align: center;
@@ -817,11 +1060,11 @@ body.home {
 
 .eyebrow {
     color: #C17F3A;
-    /* Golden Sand Accent */
     text-transform: uppercase;
     font-family: 'DM Sans', sans-serif;
     letter-spacing: 2px;
     font-weight: 700;
+    font-size: 13px;
 }
 
 .section-intro h2 {
@@ -829,115 +1072,11 @@ body.home {
     font-size: 42px;
     margin: 15px 0;
     color: #1A2E20;
-    /* Forest Green */
 }
 
-
-/* --- Grid Layout --- */
-
-.trip-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.trip-card {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
-}
-
-.trip-card:hover {
-    transform: translateY(-10px);
-}
-
-.trip-image {
-    height: 250px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-.trip-tag {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: #1A2E20;
-    color: #fff;
-    padding: 5px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.trip-details {
-    padding: 25px;
-}
-
-.trip-details h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.btn-text {
-    color: #C17F3A;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 14px;
-    display: inline-block;
-    margin-top: 15px;
-}
-
-
-/* Container for the tags sitting on the image */
-
-.trip-tags-container {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.trip-tag {
-    background: rgba(26, 46, 32, 0.9);
-    /* Forest Green */
-    color: #fff;
-    padding: 4px 10px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border-radius: 3px;
-}
-
-
-/* Styling the Price and Days row */
-
-.trip-meta-info {
-    margin: 15px 0;
-    color: #1A2E20;
-    font-family: 'DM Sans', sans-serif;
+.section-intro p {
+    color: #666;
     font-size: 15px;
-}
-
-.trip-price {
-    color: #C17F3A;
-    /* Golden Sand for the price */
-    font-size: 18px;
-}
-
-.trip-divider {
-    margin: 0 10px;
-    color: #ddd;
 }
 
 
@@ -9314,9 +9453,9 @@ body {
 .ab-btn-secondary {
     display: inline-block;
     padding: 13px 28px;
-    background: transparent;
-    color: #fff;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    background: #ffffff;
+    color: #000000;
+    border: 1.5px solid #ffffff;
     border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
@@ -9326,8 +9465,9 @@ body {
 }
 
 .ab-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.85);
     border-color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+    color: #000000;
 }
 
 
@@ -13004,4 +13144,33 @@ body {
 #navDrawer li::after {
     display: none !important;
     content: none !important;
+}
+
+.hero-subtitle {
+    display: none;
+}
+
+.hero-btns a.btn-secondary {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+.hero-btns a.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.85);
+    color: #000000;
+}
+
+@media (max-width: 768px) {
+    .hero-slide {
+        background-image: url('http://localhost/desire_adventure/wp-content/uploads/2026/05/mobile-screen.webp') !important;
+        height: 100vh;
+        background-position: center center;
+    }
+}
+
+body.single-trips .site-header {
+    position: absolute !important;
+    top: 0 !important;
+    background: transparent !important;
 }

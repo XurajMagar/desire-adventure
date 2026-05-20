@@ -1,5 +1,7 @@
 <?php get_template_part( 'parts/header' ); ?>
 
+<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+
 <?php
 // ── Gather all meta ──────────────────────────────────
 $price      = get_post_meta( get_the_ID(), '_trip_price', true )      ?: 'Contact us';
@@ -1540,4 +1542,5 @@ if ( count( $related_trips ) < 3 ) {
 
         </div>
     </div>
+<?php endwhile; endif; ?>
 <?php get_template_part( 'parts/footer' ); ?>
