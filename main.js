@@ -302,3 +302,68 @@ document.addEventListener('DOMContentLoaded', function() {
     // Scrolled header shadow
 
 });
+// ============================================
+// WHY CHOOSE US CARD SLIDER
+// ============================================
+const whyTrack = document.getElementById('whyCardsTrack');
+const whyPrev = document.getElementById('whyPrev');
+const whyNext = document.getElementById('whyNext');
+const whyDotsWrap = document.getElementById('whyDots');
+
+if (whyTrack && whyPrev && whyNext) {
+    let whyCurrent = 0;
+    const totalCards = whyTrack.children.length; // 6
+
+    function getPerSlide() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 1024) return 2;
+        return 3;
+    }
+
+    function getTotalSlides() {
+        return Math.ceil(totalCards / getPerSlide());
+    }
+
+    function buildDots() {
+        whyDotsWrap.innerHTML = '';
+        const total = getTotalSlides();
+        for (let i = 0; i < total; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'why-dot' + (i === 0 ? ' active' : '');
+            dot.dataset.index = i;
+            dot.addEventListener('click', () => {
+                whyCurrent = i;
+                updateWhySlider();
+            });
+            whyDotsWrap.appendChild(dot);
+        }
+    }
+
+    function updateWhySlider() {
+        const perSlide = getPerSlide();
+        const cardWidthPct = 100 / perSlide;
+        whyTrack.style.transform = `translateX(calc(-${whyCurrent * cardWidthPct * perSlide}% - ${whyCurrent * 12 * perSlide}px))`;
+        whyPrev.disabled = whyCurrent === 0;
+        whyNext.disabled = whyCurrent >= getTotalSlides() - 1;
+        document.querySelectorAll('.why-dot').forEach((d, i) => d.classList.toggle('active', i === whyCurrent));
+    }
+
+    whyPrev.addEventListener('click', () => {
+        whyCurrent = Math.max(0, whyCurrent - 1);
+        updateWhySlider();
+    });
+    whyNext.addEventListener('click', () => {
+        whyCurrent = Math.min(getTotalSlides() - 1, whyCurrent + 1);
+        updateWhySlider();
+    });
+
+    // Rebuild dots on resize
+    window.addEventListener('resize', () => {
+        whyCurrent = 0;
+        buildDots();
+        updateWhySlider();
+    });
+
+    buildDots();
+    updateWhySlider();
+}

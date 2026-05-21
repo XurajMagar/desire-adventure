@@ -270,7 +270,6 @@ $diff_badge = $diff_colors[ $difficulty ] ?? 'badge-amber';
                 <span>Download</span>
             </button>
         </div>
-        <a class="tp-subnav-cta" href="#tp-inquiry">Book Now</a>
     </nav>
 </div>
 
