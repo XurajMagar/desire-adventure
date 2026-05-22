@@ -18,49 +18,44 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // 2. REGION SLIDER (Swiper)
     // ============================================
+    // ============================================
+    // 2. REGION SLIDER (Swiper)
+    // ============================================
     if (document.querySelector('.regionSwiper') && typeof Swiper !== 'undefined') {
         new Swiper('.regionSwiper', {
             effect: 'coverflow',
             centeredSlides: true,
             loop: true,
+            loopedSlides: 7,
             slideToClickedSlide: true,
+            speed: 600,
             coverflowEffect: {
                 rotate: 0,
-                stretch: 80,
-                depth: 200,
-                modifier: 1,
+                stretch: 0,
+                depth: 120,
+                modifier: 2.5,
                 slideShadows: false,
             },
             breakpoints: {
                 320: {
                     slidesPerView: 1,
-                    spaceBetween: 20,
-                    coverflowEffect: { stretch: 0, depth: 0, modifier: 0 }
-                },
-                480: {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                    coverflowEffect: { stretch: 0, depth: 0, modifier: 0 }
+                    spaceBetween: 10,
+                    coverflowEffect: { rotate: 0, stretch: 0, depth: 0, modifier: 1, slideShadows: false }
                 },
                 640: {
                     slidesPerView: 1.8,
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 60, depth: 150, modifier: 1 }
-                },
-                768: {
-                    slidesPerView: 1.8,
-                    spaceBetween: 0,
-                    coverflowEffect: { stretch: 80, depth: 180, modifier: 1 }
+                    coverflowEffect: { rotate: 0, stretch: 0, depth: 80, modifier: 2, slideShadows: false }
                 },
                 992: {
-                    slidesPerView: 'auto',
+                    slidesPerView: 5,
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 150, depth: 200, modifier: 1 }
+                    coverflowEffect: { rotate: 0, stretch: 0, depth: 120, modifier: 2.5, slideShadows: false }
                 },
-                1200: {
-                    slidesPerView: 'auto',
+                1400: {
+                    slidesPerView: 5,
                     spaceBetween: 0,
-                    coverflowEffect: { stretch: 250, depth: 200, modifier: 1 }
+                    coverflowEffect: { rotate: 0, stretch: 0, depth: 150, modifier: 2.5, slideShadows: false }
                 }
             },
             navigation: {
