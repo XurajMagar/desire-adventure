@@ -16,7 +16,7 @@ body {
     position: relative;
     font-family: 'DM Sans', sans-serif;
     background: #F5F0E8;
-    color: #0f5a43;
+    color: #1C1A17;
     /* No overflow-x here — this is what was breaking sticky positioning */
 }
 
@@ -13276,7 +13276,7 @@ body.single-trips .header-pill-wrap {
 
 /* Hide Rank Math rich snippet frontend display */
 
-f #rank-math-rich-snippet-wrapper {
+#rank-math-rich-snippet-wrapper {
     display: none !important;
 }
 
