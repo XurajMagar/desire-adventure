@@ -3542,71 +3542,104 @@ function desire_trip_more_details_callback( $post ) {
         blockquotes and links. Shown after the Packing List section on the trip page.
     </p>
 
-    <textarea id="trip_more_details_tinymce" name="trip_more_details" style="width:100%;min-height:400px;"><?php echo esc_textarea( $more_details ); ?></textarea>
+    <!-- Visual / Text toggle -->
+    <div style="margin-bottom:8px;display:flex;gap:0">
+        <button type="button" id="md-tab-visual" onclick="mdSwitchTab('visual')"
+            style="padding:5px 14px;font-size:12px;font-weight:600;background:#0f5a43;color:#fff;border:1px solid #0f5a43;border-radius:4px 0 0 4px;cursor:pointer">
+            Visual
+        </button>
+        <button type="button" id="md-tab-text" onclick="mdSwitchTab('text')"
+            style="padding:5px 14px;font-size:12px;font-weight:600;background:#f0f0f0;color:#333;border:1px solid #ddd;border-left:none;border-radius:0 4px 4px 0;cursor:pointer">
+            Text (HTML)
+        </button>
+    </div>
+
+    <textarea id="trip_more_details_tinymce" name="trip_more_details"
+              style="width:100%;min-height:400px;"><?php echo esc_textarea( $more_details ); ?></textarea>
 
     <script>
-        jQuery(document).ready(function($) {
-            function initEditor() {
-                if (typeof tinymce === 'undefined') {
-                    setTimeout(initEditor, 300);
-                    return;
-                }
+    jQuery(document).ready(function($) {
+        var mdMode = 'visual';
 
-                if (tinymce.get('trip_more_details_tinymce')) {
+        window.mdSwitchTab = function(mode) {
+            if (mode === 'text') {
+                // Switch to HTML mode — destroy TinyMCE, show raw textarea
+                if (tinymce && tinymce.get('trip_more_details_tinymce')) {
+                    tinymce.get('trip_more_details_tinymce').save();
                     tinymce.get('trip_more_details_tinymce').remove();
                 }
+                $('#trip_more_details_tinymce').show().focus();
+                $('#md-tab-text').css({'background':'#0f5a43','color':'#fff','border-color':'#0f5a43'});
+                $('#md-tab-visual').css({'background':'#f0f0f0','color':'#333','border-color':'#ddd'});
+                mdMode = 'text';
+            } else {
+                // Switch to Visual mode — reinit TinyMCE
+                initMDEditor();
+                $('#md-tab-visual').css({'background':'#0f5a43','color':'#fff','border-color':'#0f5a43'});
+                $('#md-tab-text').css({'background':'#f0f0f0','color':'#333','border-color':'#ddd'});
+                mdMode = 'visual';
+            }
+        };
 
-                // Register custom button for TinyMCE 4
-                tinymce.PluginManager.add('wpimage_btn', function(editor) {
-                    editor.addButton('wpimage', {
-                        text: 'Add Media',
-                        icon: 'image',
-                        onclick: function() {
-                            var frame = wp.media({
-                                title: 'Select Image',
-                                button: { text: 'Insert' },
-                                multiple: false,
-                                library: { type: 'image' }
-                            });
-                            frame.on('select', function() {
-                                var attachment = frame.state().get('selection').first().toJSON();
-                                editor.insertContent('<img src="' + attachment.url + '" alt="' + (attachment.alt || '') + '" style="max-width:100%;height:auto;">');
-                                editor.save();
-                            });
-                            frame.open();
-                        }
-                    });
-                });
-
-                tinymce.init({
-                    selector: '#trip_more_details_tinymce',
-                    height: 400,
-                    menubar: false,
-                    statusbar: false,
-                    relative_urls: false,
-                    remove_script_host: false,
-                    convert_urls: false,
-                    document_base_url: '<?php echo esc_url( home_url('/') ); ?>',
-                    plugins: 'lists link paste wpimage_btn',
-                    toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | blockquote | link unlink | wpimage | undo redo',
-                    block_formats: 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4',
-                    setup: function(editor) {
-                        editor.on('change', function() {
-                            editor.save();
-                        });
-                    }
-                });
+        function initMDEditor() {
+            if (typeof tinymce === 'undefined') {
+                setTimeout(initMDEditor, 300);
+                return;
+            }
+            if (tinymce.get('trip_more_details_tinymce')) {
+                tinymce.get('trip_more_details_tinymce').remove();
             }
 
-            setTimeout(initEditor, 800);
+            tinymce.PluginManager.add('wpimage_btn', function(editor) {
+                editor.addButton('wpimage', {
+                    text: 'Add Media',
+                    icon: 'image',
+                    onclick: function() {
+                        var frame = wp.media({
+                            title: 'Select Image',
+                            button: { text: 'Insert' },
+                            multiple: false,
+                            library: { type: 'image' }
+                        });
+                        frame.on('select', function() {
+                            var attachment = frame.state().get('selection').first().toJSON();
+                            editor.insertContent('<img src="' + attachment.url + '" alt="' + (attachment.alt || '') + '" style="max-width:100%;height:auto;">');
+                            editor.save();
+                        });
+                        frame.open();
+                    }
+                });
+            });
 
-            $('form#post').on('submit', function() {
-                if (tinymce.get('trip_more_details_tinymce')) {
-                    tinymce.get('trip_more_details_tinymce').save();
+            tinymce.init({
+                selector: '#trip_more_details_tinymce',
+                height: 400,
+                menubar: false,
+                statusbar: false,
+                relative_urls: false,
+                remove_script_host: false,
+                convert_urls: false,
+                document_base_url: '<?php echo esc_url( home_url('/') ); ?>',
+                plugins: 'lists link paste wpimage_btn',
+                toolbar: 'formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | blockquote | link unlink | wpimage | undo redo',
+                block_formats: 'Paragraph=p;Heading 2=h2;Heading 3=h3;Heading 4=h4',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        editor.save();
+                    });
                 }
             });
+        }
+
+        setTimeout(initMDEditor, 800);
+
+        $('form#post').on('submit', function() {
+            if (tinymce && tinymce.get('trip_more_details_tinymce')) {
+                tinymce.get('trip_more_details_tinymce').save();
+            }
         });
-        </script>
+    });
+    </script>
     <?php
 }
 // Force classic editor for trips post type

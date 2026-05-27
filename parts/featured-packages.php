@@ -42,7 +42,9 @@ $bg_color_below = '#141414';
                     if ( $trip_post && $trip_post->post_status === 'publish' ) :
                         $link     = get_permalink( $selected_id ) ?: home_url( '/trips' );
                         $image    = get_the_post_thumbnail_url( $selected_id, 'medium_large' ) ?: get_template_directory_uri() . '/images/trip-placeholder.webp';
-                        $price    = get_post_meta( $selected_id, '_trip_price',    true ) ?: 'Price TBA';
+                        $regular_price = get_post_meta( $selected_id, '_trip_price', true );
+                        $sale_price    = get_post_meta( $selected_id, '_trip_sale_price', true );
+                        $price         = $sale_price ?: ( $regular_price ?: 'Price TBA' );
                         $duration = get_post_meta( $selected_id, '_trip_duration', true ) ?: 'Duration TBA';
                         ?>
                         <div class="pkg-card">

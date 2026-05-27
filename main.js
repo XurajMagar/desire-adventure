@@ -16,54 +16,79 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // 2. REGION SLIDER (Swiper)
+    // 2. REGION SLIDER — Custom centered slider
     // ============================================
-    // ============================================
-    // 2. REGION SLIDER (Swiper)
-    // ============================================
-    if (document.querySelector('.regionSwiper') && typeof Swiper !== 'undefined') {
-        new Swiper('.regionSwiper', {
-            effect: 'coverflow',
-            centeredSlides: true,
-            loop: true,
-            loopedSlides: 7,
-            slideToClickedSlide: true,
-            speed: 600,
-            coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 120,
-                modifier: 2.5,
-                slideShadows: false,
-            },
-            breakpoints: {
-                320: {
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    coverflowEffect: { rotate: 0, stretch: 0, depth: 0, modifier: 1, slideShadows: false }
-                },
-                640: {
-                    slidesPerView: 1.8,
-                    spaceBetween: 0,
-                    coverflowEffect: { rotate: 0, stretch: 0, depth: 80, modifier: 2, slideShadows: false }
-                },
-                992: {
-                    slidesPerView: 5,
-                    spaceBetween: 0,
-                    coverflowEffect: { rotate: 0, stretch: 0, depth: 120, modifier: 2.5, slideShadows: false }
-                },
-                1400: {
-                    slidesPerView: 5,
-                    spaceBetween: 0,
-                    coverflowEffect: { rotate: 0, stretch: 0, depth: 150, modifier: 2.5, slideShadows: false }
+    (function() {
+        const track = document.getElementById('rsTrack');
+        if (!track) return;
+
+        const slides = Array.from(track.querySelectorAll('.rs-slide'));
+        const total = slides.length;
+        let current = 0;
+
+        function render() {
+            slides.forEach((slide, i) => {
+                let offset = i - current;
+
+                // Handle loop wrap
+                if (offset > total / 2) offset -= total;
+                if (offset < -total / 2) offset += total;
+
+                const absOffset = Math.abs(offset);
+                const isMobile = window.innerWidth <= 639;
+                const gap = isMobile ? 160 : 220;
+
+                const x = offset * gap;
+                const scale = absOffset === 0 ? 1 :
+                    absOffset === 1 ? 0.82 :
+                    absOffset === 2 ? 0.66 :
+                    0.52;
+                const opacity = absOffset === 0 ? 1 :
+                    absOffset === 1 ? 0.55 :
+                    absOffset === 2 ? 0.3 :
+                    0;
+                const zIndex = 20 - absOffset;
+                const grayscale = absOffset === 0 ? 0 : Math.min(absOffset * 35, 80);
+
+                slide.style.transform = `translateX(${x}px) scale(${scale})`;
+                slide.style.opacity = opacity;
+                slide.style.zIndex = zIndex;
+                slide.style.filter = grayscale > 0 ? `grayscale(${grayscale}%)` : 'none';
+                slide.style.display = absOffset > 3 ? 'none' : 'block';
+            });
+        }
+
+        // Click to navigate
+        slides.forEach((slide, i) => {
+            slide.addEventListener('click', function() {
+                const offset = i - current;
+                const normalizedOffset = offset > total / 2 ? offset - total :
+                    offset < -total / 2 ? offset + total :
+                    offset;
+                if (normalizedOffset === 0) {
+                    // Navigate to region page
+                    const url = slide.dataset.url;
+                    if (url && url !== '#') window.location.href = url;
+                } else {
+                    current = i;
+                    render();
                 }
-            },
-            navigation: {
-                nextEl: '.swiper-button-next-custom',
-                prevEl: '.swiper-button-prev-custom',
-            }
+            });
         });
-    }
+
+        document.getElementById('rsPrev').addEventListener('click', function() {
+            current = (current - 1 + total) % total;
+            render();
+        });
+
+        document.getElementById('rsNext').addEventListener('click', function() {
+            current = (current + 1) % total;
+            render();
+        });
+
+        render();
+        window.addEventListener('resize', render);
+    })();
 
     // ============================================
     // 3. NEW NAVIGATION — Drawer + Dropdown
@@ -361,4 +386,49 @@ if (whyTrack && whyPrev && whyNext) {
 
     buildDots();
     updateWhySlider();
-}
+} // ============================================
+// FEATURED TRIPS — Word Grid Background
+// ============================================
+(function() {
+    const grid = document.querySelector('.ft-word-grid');
+    if (!grid) return;
+
+    const words = ['TREK', 'PEAK', 'HIKE', 'CAMP', 'SNOW', 'ALPS', 'TRAIL', 'BASE', 'RIDGE', 'CLIMB'];
+    const W = grid.parentElement.offsetWidth;
+    const H = grid.parentElement.offsetHeight;
+    const colW = 72;
+    const rowH = 32;
+    const cols = Math.ceil(W / colW) + 2;
+    const rows = Math.ceil(H / rowH) + 2;
+
+    let idx = 0;
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const el = document.createElement('span');
+            el.textContent = words[idx % words.length];
+            const isGold = idx % 4 === 0;
+            const size = 12;
+            const stroke = isGold ?
+                '0.5px rgba(201,155,45,0.25)' :
+                '0.5px rgba(255,255,255,0.15)';
+
+            el.style.cssText = `
+                position: absolute;
+                font-family: 'Arial Black', Impact, sans-serif;
+                font-weight: 900;
+                font-size: ${size}px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                white-space: nowrap;
+                line-height: 1;
+                left: ${col * colW}px;
+                top: ${row * rowH}px;
+                color: transparent;
+                -webkit-text-stroke: ${stroke};
+                user-select: none;
+            `;
+            grid.appendChild(el);
+            idx++;
+        }
+    }
+})();

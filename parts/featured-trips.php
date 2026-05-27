@@ -6,7 +6,7 @@ $bg_image = get_theme_mod( 'desire_trips_bg_image', '' );
     <?php if ( $bg_image ) : ?>
     style="background-image: url('<?php echo esc_url( $bg_image ); ?>');"
     <?php endif; ?>>
-
+    <div class="ft-word-grid" aria-hidden="true"></div>
     <div class="ft-overlay"></div>
 
     <div class="ft-inner">
