@@ -11,6 +11,8 @@ $bg_color_below = '#141414';
 </div>
 
 <section class="packages-section" id="section-packages">
+    <div class="pkg-bg-band"></div>
+    <div class="pkg-adventure-text">ADVENTURE</div>
     <div class="packages-container">
 
         <header class="pkg-section-header">
