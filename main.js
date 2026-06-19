@@ -320,7 +320,227 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Scrolled header shadow
+    (function() {
+        if (!document.getElementById('pmtBody')) return;
 
+        const totalSteps = 6;
+        let currentStep = 0;
+        const selections = {};
+
+        const steps = document.querySelectorAll('.pmt-step');
+        const progSteps = document.querySelectorAll('.pmt-prog-step');
+        const progLines = document.querySelectorAll('.pmt-prog-line');
+        const btnBack = document.getElementById('pmtBack');
+        const btnNext = document.getElementById('pmtNext');
+        const counter = document.getElementById('pmtCounter');
+
+        // Option card clicks
+        document.querySelectorAll('.pmt-opt').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                const field = this.dataset.field;
+                document.querySelectorAll('.pmt-opt[data-field="' + field + '"]').forEach(function(o) {
+                    o.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                if (field === 'region') {
+                    selections.region = this.dataset.value;
+                } else if (field === 'duration') {
+                    selections.durationMin = parseInt(this.dataset.min);
+                    selections.durationMax = parseInt(this.dataset.max);
+                    selections.durationLabel = this.querySelector('.pmt-opt-name').textContent;
+                } else if (field === 'difficulty') {
+                    selections.difficulty = this.dataset.value;
+                }
+            });
+        });
+
+        // Range sliders
+        var groupRange = document.getElementById('groupRange');
+        var budgetRange = document.getElementById('budgetRange');
+
+        if (groupRange) {
+            groupRange.addEventListener('input', function() {
+                document.getElementById('groupVal').textContent = this.value;
+                selections.groupSize = parseInt(this.value);
+            });
+            selections.groupSize = parseInt(groupRange.value);
+        }
+
+        if (budgetRange) {
+            budgetRange.addEventListener('input', function() {
+                document.getElementById('budgetVal').textContent = parseInt(this.value).toLocaleString();
+                selections.budget = parseInt(this.value);
+            });
+            selections.budget = parseInt(budgetRange.value);
+        }
+
+        function updateProgress() {
+            progSteps.forEach(function(s, i) {
+                s.classList.remove('active', 'done');
+                if (i < currentStep) s.classList.add('done');
+                else if (i === currentStep) s.classList.add('active');
+
+                // Update number to checkmark when done
+                var num = s.querySelector('.pmt-prog-num');
+                if (i < currentStep) {
+                    num.innerHTML = '✓';
+                } else {
+                    num.textContent = i + 1;
+                }
+            });
+            progLines.forEach(function(l, i) {
+                l.classList.toggle('done', i < currentStep);
+            });
+            counter.textContent = 'Step ' + (currentStep + 1) + ' of ' + totalSteps;
+            btnBack.disabled = currentStep === 0;
+            btnNext.textContent = currentStep === totalSteps - 1 ? 'Send Inquiry →' : 'Continue →';
+        }
+
+        function showStep(n) {
+            steps.forEach(function(s) { s.classList.add('hidden'); });
+            steps[n].classList.remove('hidden');
+            currentStep = n;
+            updateProgress();
+
+            if (n === totalSteps - 1) {
+                renderResults();
+                renderSummary();
+            }
+
+            // Scroll to top of container
+            var container = document.querySelector('.pmt-container');
+            if (container) {
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function getMatchScore(trip) {
+            var score = 0;
+
+            // Region match
+            if (selections.region && selections.region !== 'any') {
+                if (trip.region && trip.region.toLowerCase().includes(selections.region.toLowerCase())) {
+                    score += 40;
+                }
+            } else {
+                score += 20;
+            }
+
+            // Duration match
+            if (selections.durationMin && trip.days) {
+                if (trip.days >= selections.durationMin && trip.days <= selections.durationMax) {
+                    score += 30;
+                } else if (trip.days >= selections.durationMin - 2 && trip.days <= selections.durationMax + 2) {
+                    score += 15;
+                }
+            } else {
+                score += 15;
+            }
+
+            // Difficulty match
+            if (selections.difficulty && trip.difficulty) {
+                if (trip.difficulty === selections.difficulty) {
+                    score += 20;
+                } else {
+                    score += 5;
+                }
+            } else {
+                score += 10;
+            }
+
+            // Budget match
+            if (selections.budget && trip.price_num) {
+                if (trip.price_num <= selections.budget) {
+                    score += 10;
+                } else if (trip.price_num <= selections.budget * 1.2) {
+                    score += 5;
+                }
+            } else {
+                score += 5;
+            }
+
+            return Math.min(score, 98);
+        }
+
+        function renderResults() {
+            var container = document.getElementById('pmtResults');
+            if (!container || typeof pmtTrips === 'undefined') return;
+
+            // Score and sort trips
+            var scored = pmtTrips.map(function(t) {
+                return { trip: t, score: getMatchScore(t) };
+            });
+            scored.sort(function(a, b) { return b.score - a.score; });
+            var top = scored.slice(0, 4);
+
+            if (top.length === 0) {
+                container.innerHTML = '<div class="pmt-no-results"><p>No trips found matching your preferences.</p><p>Our team will help you find the perfect trek!</p></div>';
+                return;
+            }
+
+            container.innerHTML = top.map(function(item) {
+                var t = item.trip;
+                var score = item.score;
+                return '<div class="pmt-result-card" onclick="pmtSelectTrip(\'' + t.id + '\', \'' + encodeURIComponent(t.name) + '\', this)">' +
+                    '<div class="pmt-result-thumb" style="background-image:url(\'' + t.thumb + '\')"></div>' +
+                    '<div class="pmt-result-info">' +
+                    '<span class="pmt-match-badge">' + score + '% match</span>' +
+                    '<div class="pmt-result-name">' + t.name + '</div>' +
+                    '<div class="pmt-result-meta">' + (t.duration || 'Duration TBA') + ' · ' + (t.difficulty || 'All levels') + '</div>' +
+                    '<div class="pmt-result-price">' + (t.price || 'Contact us') + ' / person</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderSummary() {
+            var wrap = document.getElementById('pmtSummary');
+            if (!wrap) return;
+            var pills = [];
+            if (selections.region) pills.push(selections.region === 'any' ? 'Any region' : selections.region + ' Region');
+            if (selections.durationLabel) pills.push(selections.durationLabel);
+            if (selections.difficulty) pills.push(selections.difficulty + ' level');
+            if (selections.groupSize) pills.push(selections.groupSize + ' people');
+            if (selections.budget) pills.push('Budget: USD ' + selections.budget.toLocaleString());
+
+            wrap.innerHTML = '<p style="font-size:12px;color:#6B6558;margin-bottom:8px;font-weight:600;">Your preferences:</p>' +
+                pills.map(function(p) {
+                    return '<span class="pmt-summary-pill">' + p + '</span>';
+                }).join('');
+
+            // Fill hidden inputs
+            var selInput = document.getElementById('pmtSelections');
+            if (selInput) selInput.value = JSON.stringify(selections);
+        }
+
+        // Trip selection
+        window.pmtSelectTrip = function(id, name, el) {
+            document.querySelectorAll('.pmt-result-card').forEach(function(c) {
+                c.classList.remove('selected');
+            });
+            el.classList.add('selected');
+            var input = document.getElementById('pmtMatchedTrip');
+            if (input) input.value = decodeURIComponent(name) + ' (ID: ' + id + ')';
+        };
+
+        // Navigation
+        btnNext.addEventListener('click', function() {
+            if (currentStep < totalSteps - 1) {
+                showStep(currentStep + 1);
+            } else {
+                // Submit form
+                document.getElementById('pmtInquiryForm').submit();
+            }
+        });
+
+        btnBack.addEventListener('click', function() {
+            if (currentStep > 0) showStep(currentStep - 1);
+        });
+
+        // Init
+        showStep(0);
+
+    })();
 });
 // ============================================
 // WHY CHOOSE US CARD SLIDER

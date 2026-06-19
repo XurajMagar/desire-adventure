@@ -3676,3 +3676,53 @@ add_action( 'send_headers', function() {
     header( 'X-XSS-Protection: 1; mode=block' );
     header( 'Referrer-Policy: strict-origin-when-cross-origin' );
 });
+
+add_action( 'admin_post_pmt_inquiry',        'desire_handle_pmt_inquiry' );
+add_action( 'admin_post_nopriv_pmt_inquiry', 'desire_handle_pmt_inquiry' );
+
+function desire_handle_pmt_inquiry() {
+    if ( ! isset( $_POST['pmt_nonce'] ) || ! wp_verify_nonce( $_POST['pmt_nonce'], 'pmt_inquiry' ) ) {
+        wp_die( 'Security check failed.' );
+    }
+
+    $name         = sanitize_text_field( $_POST['pmt_name'] ?? '' );
+    $email        = sanitize_email( $_POST['pmt_email'] ?? '' );
+    $phone        = sanitize_text_field( $_POST['pmt_phone'] ?? '' );
+    $date         = sanitize_text_field( $_POST['pmt_date'] ?? '' );
+    $message      = sanitize_textarea_field( $_POST['pmt_message'] ?? '' );
+    $matched_trip = sanitize_text_field( $_POST['pmt_matched_trip'] ?? '' );
+    $selections   = sanitize_text_field( $_POST['pmt_selections'] ?? '' );
+
+    $sel_data = json_decode( stripslashes( $selections ), true );
+
+    $body = "NEW PLAN MY TRIP INQUIRY\n";
+    $body .= "========================\n\n";
+    $body .= "Name:    $name\n";
+    $body .= "Email:   $email\n";
+    $body .= "Phone:   $phone\n";
+    $body .= "Date:    $date\n\n";
+    $body .= "SELECTED TREK: $matched_trip\n\n";
+    $body .= "PREFERENCES:\n";
+
+    if ( is_array( $sel_data ) ) {
+        if ( ! empty( $sel_data['region'] ) )        $body .= "  Region:     " . $sel_data['region'] . "\n";
+        if ( ! empty( $sel_data['durationLabel'] ) )  $body .= "  Duration:   " . $sel_data['durationLabel'] . "\n";
+        if ( ! empty( $sel_data['difficulty'] ) )     $body .= "  Fitness:    " . $sel_data['difficulty'] . "\n";
+        if ( ! empty( $sel_data['groupSize'] ) )      $body .= "  Group size: " . $sel_data['groupSize'] . " people\n";
+        if ( ! empty( $sel_data['budget'] ) )         $body .= "  Budget:     USD " . $sel_data['budget'] . "\n";
+    }
+
+    $body .= "\nMESSAGE:\n$message\n";
+
+    $to      = get_option( 'admin_email' );
+    $subject = "Plan My Trip Inquiry — $name";
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'Reply-To: ' . $name . ' <' . $email . '>',
+    );
+
+    wp_mail( $to, $subject, $body, $headers );
+
+    wp_redirect( home_url( '/thank-you/?source=plan-my-trip&name=' . urlencode( $name ) ) );
+    exit;
+}
