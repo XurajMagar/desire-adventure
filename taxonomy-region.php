@@ -57,7 +57,7 @@ $all_trips = get_posts( array(
             $t_season     = get_post_meta( $t_id, '_trip_best_season',  true ) ?: '';
             $t_group      = get_post_meta( $t_id, '_trip_group_size',   true ) ?: '';
             $t_thumb      = get_the_post_thumbnail_url( $t_id, 'large' )
-                            ?: get_template_directory_uri() . '/images/trip-placeholder.jpg';
+                            ?: get_template_directory_uri() . '/images/trip-placeholder.webp';
             $t_link       = get_permalink( $t_id );
 
             $t_regions     = get_the_terms( $t_id, 'region' );

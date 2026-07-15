@@ -16,7 +16,10 @@
 <section class="hero-slider" id="section-hero">
     
     <?php if ( $hero_video ) : ?>
-        <video autoplay muted loop playsinline class="hero-video">
+        <video autoplay muted loop playsinline
+               preload="metadata"
+               poster="<?php echo esc_url($hero_img); ?>"
+               class="hero-video">
             <source src="<?php echo esc_url($hero_video); ?>" type="video/mp4">
         </video>
     <?php endif; ?>
@@ -48,4 +51,4 @@
             </div>
         </div>
     </div>
-</section>
+</section>  

@@ -69,7 +69,7 @@ if ( $featured && ! in_array( $featured, $gallery ) ) {
     array_unshift( $gallery, $featured );
 }
 if ( empty( $gallery ) ) {
-    $gallery[] = get_template_directory_uri() . '/images/trip-placeholder.jpg';
+    $gallery[] = get_template_directory_uri() . '/images/trip-placeholder.webp';
 }
 
 // Itinerary days
@@ -1154,7 +1154,7 @@ if ( count( $related_trips ) < 3 ) {
 
                 <!-- Image -->
                 <div class="tp-related-img"
-                     style="background-image: url('<?php echo esc_url( $t_thumb ?: get_template_directory_uri() . '/images/trip-placeholder.jpg' ); ?>')">
+                     style="background-image: url('<?php echo esc_url( $t_thumb ?: get_template_directory_uri() . '/images/trip-placeholder.webp' ); ?>')">
                     <?php if ( $t_region_name ) : ?>
                     <span class="tp-related-region-tag"><?php echo esc_html( $t_region_name ); ?></span>
                     <?php endif; ?>

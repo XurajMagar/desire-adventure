@@ -17,8 +17,10 @@ function desire_adventure_setup() {
 
     // Registers the menu location so you can use the Dashboard[cite: 3]
     register_nav_menus( array(
-        'primary' => __( 'Primary Menu', 'desire-adventure' ),
-    ) );
+    'primary'      => __( 'Primary Menu', 'desire-adventure' ),
+    'footer_quick' => __( 'Footer – Quick Links', 'desire-adventure' ),
+    'footer_treks' => __( 'Footer – Popular Treks', 'desire-adventure' ),
+) );
 }
 add_action( 'after_setup_theme', 'desire_adventure_setup' );
 
@@ -3723,6 +3725,6 @@ function desire_handle_pmt_inquiry() {
 
     wp_mail( $to, $subject, $body, $headers );
 
-    wp_redirect( home_url( '/thank-you/?source=plan-my-trip&name=' . urlencode( $name ) ) );
+    wp_redirect( home_url( '/thank-you/?source=plan-my-trip&pmt_name=' . urlencode( $name ) ) );
     exit;
 }

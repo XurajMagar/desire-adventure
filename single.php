@@ -250,7 +250,7 @@ if ( $cats ) {
                 <a href="<?php echo esc_url( get_permalink( $rp->ID ) ); ?>"
                    class="post-related-card">
                     <div class="post-related-img"
-                         style="background-image: url('<?php echo esc_url( $rp_thumb ?: get_template_directory_uri() . '/images/trip-placeholder.jpg' ); ?>')">
+                         style="background-image: url('<?php echo esc_url( $rp_thumb ?: get_template_directory_uri() . '/images/trip-placeholder.webp' ); ?>')">
                         <?php if ( $rp_cat_name ) : ?>
                         <span class="blog-card-cat"><?php echo esc_html( $rp_cat_name ); ?></span>
                         <?php endif; ?>

@@ -11,6 +11,7 @@ $ft_tk        = get_theme_mod( 'desire_ft_tiktok', '#' );
 $ft_privacy   = get_theme_mod( 'desire_ft_privacy_url', '#' );
 $ft_terms     = get_theme_mod( 'desire_ft_terms_url', '#' );
 $ft_copyright = get_theme_mod( 'desire_ft_copyright', '© ' . date('Y') . ' Desire Adventure. All rights reserved.' );
+$ft_trust     = get_theme_mod( 'desire_ft_trust', '' );
 ?>
 
 <footer class="site-footer">
@@ -34,6 +35,13 @@ $ft_copyright = get_theme_mod( 'desire_ft_copyright', '© ' . date('Y') . ' Desi
 
             <?php if ( $ft_about ) : ?>
                 <p class="ft-about"><?php echo esc_html( $ft_about ); ?></p>
+            <?php endif; ?>
+
+            <?php if ( $ft_trust ) : ?>
+                <p class="ft-trust">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    <?php echo esc_html( $ft_trust ); ?>
+                </p>
             <?php endif; ?>
 
             <!-- Social Icons -->
@@ -69,7 +77,7 @@ $ft_copyright = get_theme_mod( 'desire_ft_copyright', '© ' . date('Y') . ' Desi
             <h4 class="ft-col-title">Quick Links</h4>
             <?php
             wp_nav_menu( array(
-                'theme_location' => 'primary',
+                'theme_location' => 'footer_quick',
                 'container'      => false,
                 'menu_class'     => 'ft-links',
                 'depth'          => 1,
@@ -91,26 +99,39 @@ $ft_copyright = get_theme_mod( 'desire_ft_copyright', '© ' . date('Y') . ' Desi
         <div class="ft-col">
             <h4 class="ft-col-title">Popular Treks</h4>
             <?php
-            $footer_trips = get_posts( array(
-                'post_type'      => 'trips',
-                'posts_per_page' => 5,
-                'post_status'    => 'publish',
-                'orderby'        => 'date',
-                'order'          => 'DESC',
-            ) );
+            if ( has_nav_menu( 'footer_treks' ) ) :
+                // Curated: whatever you set in Appearance → Menus
+                wp_nav_menu( array(
+                    'theme_location' => 'footer_treks',
+                    'container'      => false,
+                    'menu_class'     => 'ft-links',
+                    'depth'          => 1,
+                ) );
+            else :
+                // Fallback: latest 5 published trips, newest first
+                $footer_trips = get_posts( array(
+                    'post_type'      => 'trips',
+                    'posts_per_page' => 5,
+                    'post_status'    => 'publish',
+                    'orderby'        => 'date',
+                    'order'          => 'DESC',
+                ) );
 
-            if ( $footer_trips ) :
+                if ( $footer_trips ) :
+                ?>
+                <ul class="ft-links">
+                    <?php foreach ( $footer_trips as $trip ) : ?>
+                        <li>
+                            <a href="<?php echo esc_url( get_permalink( $trip->ID ) ); ?>">
+                                <?php echo esc_html( $trip->post_title ); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php
+                endif;
+            endif;
             ?>
-            <ul class="ft-links">
-                <?php foreach ( $footer_trips as $trip ) : ?>
-                    <li>
-                        <a href="<?php echo esc_url( get_permalink( $trip->ID ) ); ?>">
-                            <?php echo esc_html( $trip->post_title ); ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <?php endif; ?>
         </div>
 
         <!-- Column 4: Contact -->
@@ -179,6 +200,12 @@ $ft_copyright = get_theme_mod( 'desire_ft_copyright', '© ' . date('Y') . ' Desi
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Decorative mountain silhouette (design B) -->
+    <svg class="ft-mountains" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 150 L220 70 L400 128 L600 46 L820 134 L1040 72 L1240 138 L1440 88 L1440 200 L0 200 Z" fill="#0f2e24"/>
+        <path d="M0 172 L280 108 L520 158 L760 96 L1000 162 L1220 116 L1440 158 L1440 200 L0 200 Z" fill="#0d4a38"/>
+    </svg>
 
 </footer>
 

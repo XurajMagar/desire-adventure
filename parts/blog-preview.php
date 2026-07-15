@@ -42,7 +42,7 @@ if ( ! $blog_query->have_posts() ) return;
                 $post_count++;
 
                 $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'large' )
-                    ?: get_template_directory_uri() . '/images/trip-placeholder.jpg';
+                    ?: get_template_directory_uri() . '/images/trip-placeholder.webp';
 
                 // Calculate read time (avg 200 words per minute)
                 $word_count = str_word_count( wp_strip_all_tags( get_the_content() ) );
