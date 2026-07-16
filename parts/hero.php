@@ -17,11 +17,26 @@
     
     <?php if ( $hero_video ) : ?>
         <video autoplay muted loop playsinline
-               preload="metadata"
-               poster="<?php echo esc_url($hero_img); ?>"
-               class="hero-video">
-            <source src="<?php echo esc_url($hero_video); ?>" type="video/mp4">
-        </video>
+            preload="none"
+            poster="<?php echo esc_url($hero_img); ?>"
+            class="hero-video"
+            data-src="<?php echo esc_url($hero_video); ?>"></video>
+        <script>
+        (function () {
+            var v = document.querySelector('.hero-video');
+            if (!v || !v.dataset.src) return;
+            var mq = window.matchMedia('(min-width: 769px)');
+            function loadVideo() {
+                if (!mq.matches || v.src) return;
+                v.src = v.dataset.src;
+                v.load();
+                var p = v.play();
+                if (p) { p.catch(function () {}); }
+            }
+            loadVideo();
+            mq.addEventListener('change', loadVideo);
+        })();
+        </script>
     <?php endif; ?>
 
     <?php 
