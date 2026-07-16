@@ -128,10 +128,14 @@ function desire_adventure_customizer_settings( $wp_customize ) {
         'label' => 'Button 2 Link (URL)', 'section' => 'desire_hero_section', 'settings' => 'desire_hero_btn2_url',
     ) );
     // --- VIDEO BANNER SETTING ---
-    $wp_customize->add_setting( 'desire_hero_video' );
+    $wp_customize->add_setting( 'desire_hero_video', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+    ) );
     $wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'hero_video_control', array(
-        'label'    => __( 'Banner Video (MP4)', 'desire-adventure' ),
-        'section'  => 'desire_hero_section',
+        'label'     => __( 'Banner Video (MP4)', 'desire-adventure' ),
+        'section'   => 'desire_hero_section',
+        'settings'  => 'desire_hero_video',
         'mime_type' => 'video', // This limits the upload to video files
     ) ) );
 
