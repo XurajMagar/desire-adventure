@@ -25,7 +25,7 @@
         (function () {
             var v = document.querySelector('.hero-video');
             if (!v || !v.dataset.src) return;
-            var mq = window.matchMedia('(min-width: 769px)');
+            var mq = window.matchMedia('(min-width: 1024px)');
             function loadVideo() {
                 if (!mq.matches || v.src) return;
                 v.src = v.dataset.src;

@@ -401,3 +401,12 @@ if (collapseAllBtn) {
         });
     });
 }
+// Reveal the mobile floater only after the hero has scrolled out of view
+const tpFloater = document.getElementById('tpMobileFloater');
+const tpHeroEl = document.querySelector('.tp-hero');
+if (tpFloater && tpHeroEl) {
+    const floaterObserver = new IntersectionObserver(function(entries) {
+        tpFloater.classList.toggle('is-revealed', !entries[0].isIntersecting);
+    }, { threshold: 0 });
+    floaterObserver.observe(tpHeroEl);
+}

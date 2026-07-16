@@ -5314,9 +5314,20 @@ body.home {
     right: 0;
     z-index: 9990;
     font-family: 'DM Sans', sans-serif;
+    pointer-events: none;
+    /* Container is taller than its visible UI (the closed panel still
+       occupies layout). Let clicks fall through; real UI re-enables below. */
+}
+
+.tp-floater-bottom {
+    pointer-events: auto;
 }
 
 .tp-floater-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
     background: #0d0d0d;
     border-radius: 20px 20px 0 0;
     padding: 20px 20px 8px;
@@ -12849,7 +12860,7 @@ body {
     color: #000000;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .hero-slide {
         background-image: url('http://localhost/desire_adventure/wp-content/uploads/2026/05/mobile-screen.webp') !important;
         height: 100vh;
