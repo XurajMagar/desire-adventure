@@ -61,6 +61,7 @@ $all_trips = get_posts( array(
                 <form method="POST"
                       action="<?php echo esc_url( admin_url('admin-post.php') ); ?>"
                       class="ct-form" id="ctContactForm">
+                      <?php desire_form_spam_fields(); ?>
 
                     <?php wp_nonce_field( 'contact_form_submit', 'contact_nonce' ); ?>
                     <input type="hidden" name="action" value="contact_form">

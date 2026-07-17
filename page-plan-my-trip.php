@@ -253,6 +253,7 @@ foreach ( $all_trips as $trip ) {
                         <p class="pmt-inquiry-sub">Our team responds within 24 hours</p>
 
                         <form class="pmt-inquiry-form" id="pmtInquiryForm" method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
+                            <?php desire_form_spam_fields(); ?>
                             <?php wp_nonce_field( 'pmt_inquiry', 'pmt_nonce' ); ?>
                             <input type="hidden" name="action" value="pmt_inquiry">
                             <input type="hidden" name="pmt_selections" id="pmtSelections">

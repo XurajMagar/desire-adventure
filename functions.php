@@ -2,6 +2,7 @@
 /**
  * Desire Adventure Functions
  */
+if ( ! defined( 'ABSPATH' ) ) exit;
 function desire_adventure_setup() {
     // Unlocks the "Logo" upload in Site Identity
     add_theme_support( 'post-thumbnails' );
@@ -725,6 +726,9 @@ function desire_save_trip_meta( $post_id ) {
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
         return;
     }
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return;
+    }
 
     // --- Basic text fields ---
     $basic_fields = array(
@@ -1001,7 +1005,7 @@ function desire_adventure_assets() {
             'booking-system-js',
             get_template_directory_uri() . '/booking-system.js',
             array(),
-            null,
+            filemtime( get_template_directory() . '/booking-system.js' ),
             true
         );
     }
@@ -1030,22 +1034,22 @@ function desire_adventure_assets() {
     wp_enqueue_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', array(), null, true );
 
     // 7. Main JS
-    wp_enqueue_script( 'main-js', get_template_directory_uri() . '/main.js', array( 'swiper-js' ), null, true );
+    wp_enqueue_script( 'main-js', get_template_directory_uri() . '/main.js', array( 'swiper-js' ), filemtime( get_template_directory() . '/main.js' ), true );
 
     // 8. Reviews JS
-    wp_enqueue_script( 'reviews-js', get_template_directory_uri() . '/reviews.js', array(), null, true );
+    wp_enqueue_script( 'reviews-js', get_template_directory_uri() . '/reviews.js', array(), filemtime( get_template_directory() . '/reviews.js' ), true );
 
     // 9. FAQ JS
-    wp_enqueue_script( 'faq-js', get_template_directory_uri() . '/faq.js', array(), null, true );
+    wp_enqueue_script( 'faq-js', get_template_directory_uri() . '/faq.js', array(), filemtime( get_template_directory() . '/faq.js' ), true );
 
     // 10. Navigator JS — homepage only
     if ( is_front_page() ) {
-        wp_enqueue_script( 'navigator-js', get_template_directory_uri() . '/navigator.js', array(), null, true );
+        wp_enqueue_script( 'navigator-js', get_template_directory_uri() . '/navigator.js', array(), filemtime( get_template_directory() . '/navigator.js' ), true );
     }
 
     // 11. Trip page JS — single trip pages only
     if ( is_singular( 'trips' ) ) {
-        wp_enqueue_script( 'trip-page-js', get_template_directory_uri() . '/trip-page.js', array(), null, true );
+        wp_enqueue_script( 'trip-page-js', get_template_directory_uri() . '/trip-page.js', array(), filemtime( get_template_directory() . '/trip-page.js' ), true );
     }
     // Archive trips JS
     if ( is_post_type_archive( 'trips' ) || is_page_template( 'archive-trips.php' ) ) {
@@ -1053,7 +1057,7 @@ function desire_adventure_assets() {
             'archive-trips-js',
             get_template_directory_uri() . '/archive-trips.js',
             array(),
-            null,
+            filemtime( get_template_directory() . '/archive-trips.js' ),
             true
         );
     }
@@ -1897,6 +1901,10 @@ function desire_handle_trip_enquiry() {
          ! wp_verify_nonce( $_POST['tp_enquiry_nonce'], 'tp_enquiry_submit' ) ) {
         wp_die( 'Security check failed.' );
     }
+    if ( desire_form_is_spam() ) {
+        wp_safe_redirect( home_url( '/thank-you/' ) );
+        exit;
+    }
 
     $name      = sanitize_text_field( $_POST['tp_name'] ?? '' );
     $email     = sanitize_email( $_POST['tp_email'] ?? '' );
@@ -2005,6 +2013,10 @@ function desire_handle_trip_booking() {
     if ( ! isset( $_POST['tp_booking_nonce'] ) ||
          ! wp_verify_nonce( $_POST['tp_booking_nonce'], 'tp_booking_submit' ) ) {
         wp_die( 'Security check failed.' );
+    }
+    if ( desire_form_is_spam() ) {
+        wp_safe_redirect( home_url( '/thank-you/' ) );
+        exit;
     }
 
     $name         = sanitize_text_field( $_POST['bk_name']         ?? '' );
@@ -2147,7 +2159,7 @@ function desire_adventure_admin_scripts( $hook ) {
             'desire-admin-itinerary',
             get_template_directory_uri() . '/admin-itinerary.js',
             array( 'jquery' ),
-            null,
+            filemtime( get_template_directory() . '/admin-itinerary.js' ),
             true
         );
     }
@@ -3302,6 +3314,7 @@ function desire_save_team_member( $post_id ) {
         return;
     }
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
     $text_fields = array(
         'team_role', 'team_experience', 'team_languages',
@@ -3455,6 +3468,10 @@ function desire_handle_contact_form() {
     if ( ! isset( $_POST['contact_nonce'] ) ||
          ! wp_verify_nonce( $_POST['contact_nonce'], 'contact_form_submit' ) ) {
         wp_die( 'Security check failed.' );
+    }
+    if ( desire_form_is_spam() ) {
+        wp_safe_redirect( home_url( '/thank-you/' ) );
+        exit;
     }
 
     $name       = sanitize_text_field( $_POST['ct_name']     ?? '' );
@@ -3690,7 +3707,10 @@ function desire_handle_pmt_inquiry() {
     if ( ! isset( $_POST['pmt_nonce'] ) || ! wp_verify_nonce( $_POST['pmt_nonce'], 'pmt_inquiry' ) ) {
         wp_die( 'Security check failed.' );
     }
-
+    if ( desire_form_is_spam() ) {
+        wp_safe_redirect( home_url( '/thank-you/' ) );
+        exit;
+    }
     $name         = sanitize_text_field( $_POST['pmt_name'] ?? '' );
     $email        = sanitize_email( $_POST['pmt_email'] ?? '' );
     $phone        = sanitize_text_field( $_POST['pmt_phone'] ?? '' );
@@ -3731,4 +3751,44 @@ function desire_handle_pmt_inquiry() {
 
     wp_redirect( home_url( '/thank-you/?source=plan-my-trip&pmt_name=' . urlencode( $name ) ) );
     exit;
+}
+/**
+ * Hidden fields for public forms. Bots fill them; humans can't see them.
+ */
+function desire_form_spam_fields() {
+    ?>
+    <div style="position:absolute;left:-9999px;" aria-hidden="true">
+        <label>Leave this field empty
+            <input type="text" name="desire_hp" tabindex="-1" autocomplete="off">
+        </label>
+    </div>
+    <input type="hidden" name="desire_ts" value="<?php echo esc_attr( time() ); ?>">
+    <?php
+}
+
+/**
+ * Returns true if a submission looks automated.
+ */
+function desire_form_is_spam() {
+    if ( ! empty( $_POST['desire_hp'] ) ) {
+        return true;
+    }
+
+    $started = isset( $_POST['desire_ts'] ) ? absint( $_POST['desire_ts'] ) : 0;
+    if ( $started && ( time() - $started ) < 3 ) {
+        return true;
+    }
+
+    $ip = isset( $_SERVER['REMOTE_ADDR'] )
+        ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+    if ( $ip ) {
+        $key   = 'desire_rl_' . md5( $ip );
+        $count = (int) get_transient( $key );
+        if ( $count >= 5 ) {
+            return true;
+        }
+        set_transient( $key, $count + 1, 15 * MINUTE_IN_SECONDS );
+    }
+
+    return false;
 }

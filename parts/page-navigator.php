@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 // Only show on the homepage
 if ( ! is_front_page() ) return;
 ?>

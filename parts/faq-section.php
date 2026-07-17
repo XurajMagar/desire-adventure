@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $faq_kicker      = get_theme_mod( 'desire_faq_kicker', 'FAQ' );
 $faq_title       = get_theme_mod( 'desire_faq_title', 'Questions we get asked a lot' );
 $faq_desc        = get_theme_mod( 'desire_faq_desc', "Can't find what you're looking for? Reach out to us directly and our team will get back to you within 24 hours." );

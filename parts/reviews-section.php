@@ -1,4 +1,5 @@
 <!-- Divider: top of Reviews -->
+ <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <section class="reviews-section light-theme" id="section-reviews">
     <div class="why-container">
 

@@ -1,4 +1,5 @@
  <?php
+ if ( ! defined( 'ABSPATH' ) ) exit;
 $bg_color_above = '#F5F0E8';
 $bg_color_below = '#141414';
 ?>

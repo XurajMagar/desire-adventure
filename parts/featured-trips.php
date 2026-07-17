@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $bg_image = get_theme_mod( 'desire_trips_bg_image', '' );
 ?>
 

@@ -1304,6 +1304,7 @@ if ( count( $related_trips ) < 3 ) {
         </div>
         <div class="tp-popup-body">
             <form class="tp-enquiry-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="POST">
+                 <?php desire_form_spam_fields(); ?>
                 <?php wp_nonce_field( 'tp_enquiry_submit', 'tp_enquiry_nonce' ); ?>
                 <input type="hidden" name="action" value="tp_enquiry">
                 <input type="hidden" name="trip_name" value="<?php the_title_attribute(); ?>">

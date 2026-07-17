@@ -1,4 +1,5 @@
 <?php 
+if ( ! defined( 'ABSPATH' ) ) exit;
     $hero_video_id  = get_theme_mod('desire_hero_video');
     $hero_video     = $hero_video_id ? wp_get_attachment_url($hero_video_id) : '';
     $hero_img = get_theme_mod('desire_hero_image', get_template_directory_uri() . '/images/hero-fallback.webp');

@@ -134,6 +134,7 @@ $booking_ref = $trek_code . '-' . $date_code . '-' . $unique_num;
             <h3 class="bk-form-title">Your Details</h3>
 
             <form class="bk-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="POST">
+                <?php desire_form_spam_fields(); ?>
                 <?php wp_nonce_field( 'tp_booking_submit', 'tp_booking_nonce' ); ?>
                 <input type="hidden" name="action"      value="tp_booking">
                 <input type="hidden" name="trip_id"     value="<?php echo (int) $trip_id; ?>">

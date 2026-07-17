@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $at_kicker      = get_theme_mod( 'desire_at_kicker', 'Our Story' );
 $at_title       = get_theme_mod( 'desire_at_title', 'Born from a passion for the mountains' );
 $at_desc        = get_theme_mod( 'desire_at_desc', "We are a team of passionate Nepali guides and trekking experts who have spent years walking these trails. From the high passes of Everest to the sacred lakes of Mustang, we bring you authentic, safe and life-changing Himalayan experiences." );

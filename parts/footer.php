@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $ft_about     = get_theme_mod( 'desire_ft_about', 'We guide passionate trekkers through the world\'s most breathtaking Himalayan landscapes. Every trail, every summit — experienced with heart.' );
 $ft_tagline   = get_theme_mod( 'desire_ft_tagline', 'Nepal\'s Premier Trekking Agency' );
 $ft_email     = get_theme_mod( 'desire_ft_email', 'info@desireadventure.com' );

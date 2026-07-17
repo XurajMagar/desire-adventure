@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $subtitle = get_theme_mod( 'desire_why_subtitle', 'WHY CHOOSE US' );
 $title    = get_theme_mod( 'desire_why_main_title', 'Your Adventure, Guided With Heart' );
 $desc     = get_theme_mod( 'desire_why_description', "We've been walking these trails for years..." );

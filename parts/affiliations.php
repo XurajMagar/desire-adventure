@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $aff_label = get_theme_mod( 'desire_aff_label', 'Affiliated & Certified With' );
 
 // Collect all logos that have been uploaded

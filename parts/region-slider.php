@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $pattern_url = content_url( 'uploads/2026/05/doodle-art.webp' );
 ?>
 

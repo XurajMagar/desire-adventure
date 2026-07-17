@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 $bp_kicker   = get_theme_mod( 'desire_bp_kicker', 'From the Trail' );
 $bp_title    = get_theme_mod( 'desire_bp_title', 'Trekking Tips & Stories' );
 $bp_btn_text = get_theme_mod( 'desire_bp_btn_text', 'View All Articles' );

@@ -364,6 +364,15 @@ if (typeof tpAltitudeData !== 'undefined' && tpAltitudeData.length >= 2) {
         setTimeout(drawAltitudeChart, 300);
     }
 }
+// Reveal the mobile floater only after the hero has scrolled out of view
+const tpFloater = document.getElementById('tpMobileFloater');
+const tpHeroEl = document.querySelector('.tp-hero');
+if (tpFloater && tpHeroEl) {
+    const floaterObserver = new IntersectionObserver(function(entries) {
+        tpFloater.classList.toggle('is-revealed', !entries[0].isIntersecting);
+    }, { threshold: 0 });
+    floaterObserver.observe(tpHeroEl);
+}
 // ============================================
 // ITINERARY ACCORDION
 // ============================================
@@ -400,13 +409,4 @@ if (collapseAllBtn) {
             if (toggle) toggle.setAttribute('aria-expanded', 'false');
         });
     });
-}
-// Reveal the mobile floater only after the hero has scrolled out of view
-const tpFloater = document.getElementById('tpMobileFloater');
-const tpHeroEl = document.querySelector('.tp-hero');
-if (tpFloater && tpHeroEl) {
-    const floaterObserver = new IntersectionObserver(function(entries) {
-        tpFloater.classList.toggle('is-revealed', !entries[0].isIntersecting);
-    }, { threshold: 0 });
-    floaterObserver.observe(tpHeroEl);
 }
