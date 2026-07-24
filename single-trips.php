@@ -1533,7 +1533,7 @@ if ( count( $related_trips ) < 3 ) {
                 <p><?php echo get_bloginfo( 'name' ); ?> &nbsp;·&nbsp;
                 <?php echo get_bloginfo( 'url' ); ?> &nbsp;·&nbsp;
                 <?php echo esc_html( get_theme_mod( 'desire_ft_phone', '+977 9851233710' ) ); ?> &nbsp;·&nbsp;
-                <?php echo esc_html( get_theme_mod( 'desire_ft_email', 'info@desireadventure.com' ) ); ?>
+                <?php echo esc_html( get_theme_mod( 'desire_ft_email', 'info@desireadventures.com' ) ); ?>
                 </p>
                 <p style="margin-top:4px;color:#999;font-size:10px">
                     Generated on <?php echo date( 'j F Y' ); ?>

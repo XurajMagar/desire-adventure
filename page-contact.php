@@ -8,7 +8,7 @@ get_template_part( 'parts/header' );
 $address   = get_theme_mod( 'desire_contact_address',  'Thamel, Kathmandu, Nepal' );
 $phone     = get_theme_mod( 'desire_contact_phone',    '+977 9851233710' );
 $whatsapp  = get_theme_mod( 'desire_contact_whatsapp', '+977 9851233710' );
-$email     = get_theme_mod( 'desire_contact_email',    'info@desireadventure.com' );
+$email     = get_theme_mod( 'desire_contact_email',    'info@desireadventures.com' );
 $hours     = get_theme_mod( 'desire_contact_hours',    'Sunday – Friday: 9:00 AM – 6:00 PM NST' );
 $response  = get_theme_mod( 'desire_contact_response', 'We typically respond within 24 hours' );
 $map_url   = get_theme_mod( 'desire_contact_map_url',  '' );

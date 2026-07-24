@@ -2,6 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
     $hero_video_id  = get_theme_mod('desire_hero_video');
     $hero_video     = $hero_video_id ? wp_get_attachment_url($hero_video_id) : '';
+    $hero_video_m_id = get_theme_mod('desire_hero_video_mobile');
+    $hero_video_mob  = $hero_video_m_id ? wp_get_attachment_url($hero_video_m_id) : '';
     $hero_img = get_theme_mod('desire_hero_image', get_template_directory_uri() . '/images/hero-fallback.webp');
     $hero_title = get_theme_mod('desire_hero_title', 'Discover the Heart of the Himalayas');
     
@@ -16,26 +18,39 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 <section class="hero-slider" id="section-hero">
     
-    <?php if ( $hero_video ) : ?>
+    <?php if ( $hero_video || $hero_video_mob ) : ?>
         <video autoplay muted loop playsinline
             preload="none"
             poster="<?php echo esc_url($hero_img); ?>"
             class="hero-video"
-            data-src="<?php echo esc_url($hero_video); ?>"></video>
+            data-src-desktop="<?php echo esc_url($hero_video); ?>"
+            data-src-mobile="<?php echo esc_url($hero_video_mob); ?>"></video>
         <script>
         (function () {
             var v = document.querySelector('.hero-video');
-            if (!v || !v.dataset.src) return;
+            if (!v) return;
             var mq = window.matchMedia('(min-width: 1024px)');
-            function loadVideo() {
-                if (!mq.matches || v.src) return;
-                v.src = v.dataset.src;
+            function pick() {
+                var want = mq.matches ? v.dataset.srcDesktop : v.dataset.srcMobile;
+                if (!want) {
+                    // No video for this screen — hide it, let the CSS image show
+                    if (v.getAttribute('src')) {
+                        v.pause();
+                        v.removeAttribute('src');
+                        v.load();
+                    }
+                    v.style.display = 'none';
+                    return;
+                }
+                v.style.display = '';
+                if (v.getAttribute('src') === want) return; // already loaded
+                v.src = want;
                 v.load();
                 var p = v.play();
                 if (p) { p.catch(function () {}); }
             }
-            loadVideo();
-            mq.addEventListener('change', loadVideo);
+            pick();
+            mq.addEventListener('change', pick);
         })();
         </script>
     <?php endif; ?>
@@ -67,4 +82,4 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             </div>
         </div>
     </div>
-</section>  
+</section>

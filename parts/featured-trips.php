@@ -21,7 +21,8 @@ $bg_image = get_theme_mod( 'desire_trips_bg_image', '' );
         $trip_query = new WP_Query( array(
             'post_type'      => 'trips',
             'posts_per_page' => 4,
-            'category_name'  => 'featured',
+            'meta_key'       => '_trip_featured',
+            'meta_value'     => '1',
         ) );
 
         if ( $trip_query->have_posts() ) :

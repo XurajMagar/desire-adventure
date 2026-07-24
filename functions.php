@@ -139,7 +139,18 @@ function desire_adventure_customizer_settings( $wp_customize ) {
         'settings'  => 'desire_hero_video',
         'mime_type' => 'video', // This limits the upload to video files
     ) ) );
-
+  // Mobile (vertical) banner video — shown on screens 1023px and below
+    $wp_customize->add_setting( 'desire_hero_video_mobile', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'hero_video_mobile_control', array(
+        'label'       => __( 'Banner Video — Mobile (vertical MP4)', 'desire-adventure' ),
+        'description' => __( 'Optional. Vertical 9:16 clip for phones. If empty, phones show the mobile image instead.', 'desire-adventure' ),
+        'section'     => 'desire_hero_section',
+        'settings'    => 'desire_hero_video_mobile',
+        'mime_type'   => 'video',
+    ) ) );
 } // <--- ALL settings must be ABOVE this closing bracket!
 
 add_action( 'customize_register', 'desire_adventure_customizer_settings' );
@@ -155,7 +166,6 @@ function desire_adventure_register_trips() {
         'menu_icon'   => 'dashicons-mountain',
         'supports'    => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
         'rewrite'     => array('slug' => 'trips'),
-        'taxonomies'  => array( 'category' ), // This line is the key!
     );
     register_post_type( 'trips', $args );
 }
@@ -322,7 +332,14 @@ function desire_trip_basic_callback( $post ) {
     $group      = get_post_meta( $post->ID, '_trip_group_size', true );
     $starts     = get_post_meta( $post->ID, '_trip_start_end', true );
     $season     = get_post_meta( $post->ID, '_trip_best_season', true );
+    $featured = get_post_meta( $post->ID, '_trip_featured', true );
     ?>
+    <p style="background:#fff8e5;border:1px solid #f0d98c;padding:10px;margin-bottom:14px">
+        <label>
+            <input type="checkbox" name="trip_featured" value="1" <?php checked( $featured, '1' ); ?>>
+            <strong>Featured trip</strong> — show in the homepage "Featured Adventures" section
+        </label>
+    </p>
 
     <p><strong>Duration (e.g. 14 Days):</strong></p>
     <input type="text" name="trip_duration" value="<?php echo esc_attr( $duration ); ?>" style="width:100%;margin-bottom:10px">
@@ -729,7 +746,8 @@ function desire_save_trip_meta( $post_id ) {
     if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
-
+    // Checkboxes send nothing when unchecked, so set the value explicitly
+    update_post_meta( $post_id, '_trip_featured', isset( $_POST['trip_featured'] ) ? '1' : '' );
     // --- Basic text fields ---
     $basic_fields = array(
         'trip_price'        => '_trip_price',
@@ -1831,7 +1849,7 @@ function desire_register_footer_settings( $wp_customize ) {
     ));
 
     $wp_customize->add_setting( 'desire_ft_email', array(
-        'default'           => 'info@desireadventure.com',
+        'default'           => 'info@desireadventures.com',
         'sanitize_callback' => 'sanitize_email',
     ));
     $wp_customize->add_control( 'desire_ft_email_ctrl', array(
@@ -3385,7 +3403,7 @@ function desire_register_contact_page( $wp_customize ) {
 
     // Email
     $wp_customize->add_setting( 'desire_contact_email', array(
-        'default'           => 'info@desireadventure.com',
+        'default'           => 'info@desireadventures.com',
         'sanitize_callback' => 'sanitize_email',
     ));
     $wp_customize->add_control( 'desire_contact_email_ctrl', array(
