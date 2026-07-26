@@ -14,6 +14,7 @@ $at_btn_url       = get_theme_mod( 'desire_at_btn_url', '#' );
 ?>
 
 <section class="about-teaser-section" id="section-about">
+    <canvas class="at-snow" aria-hidden="true"></canvas>
     <div class="about-teaser-container">
 
         <!-- LEFT: Text Content -->
@@ -70,4 +71,76 @@ $at_btn_url       = get_theme_mod( 'desire_at_btn_url', '#' );
         </div>
 
     </div>
+
+    <script>
+    (function () {
+        var section = document.getElementById('section-about');
+        var canvas  = section && section.querySelector('.at-snow');
+        if (!canvas) return;
+
+        // Respect users who prefer less motion — no animation for them
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        var ctx = canvas.getContext('2d');
+        var flakes = [];
+        var COUNT = 45;          // sparse on purpose
+        var running = false, raf = null;
+
+        function size() {
+            canvas.width  = section.offsetWidth;
+            canvas.height = section.offsetHeight;
+        }
+
+        function makeFlakes() {
+            flakes = [];
+            for (var i = 0; i < COUNT; i++) {
+                flakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2 + 0.6,
+                    speed: Math.random() * 0.5 + 0.2,
+                    drift: Math.random() * 0.5 - 0.25,
+                    o: Math.random() * 0.4 + 0.15
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (var i = 0; i < flakes.length; i++) {
+                var f = flakes[i];
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,' + f.o + ')';
+                ctx.fill();
+                f.y += f.speed;
+                f.x += f.drift;
+                if (f.y > canvas.height) { f.y = -5; f.x = Math.random() * canvas.width; }
+                if (f.x > canvas.width) f.x = 0;
+                if (f.x < 0) f.x = canvas.width;
+            }
+            raf = requestAnimationFrame(draw);
+        }
+
+        function start() { if (!running) { running = true; draw(); } }
+        function stop()  { running = false; if (raf) cancelAnimationFrame(raf); }
+
+        size(); makeFlakes();
+
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+                entries[0].isIntersecting ? start() : stop();
+            }, { threshold: 0 }).observe(section);
+        } else {
+            start();
+        }
+
+        var t;
+        window.addEventListener('resize', function () {
+            clearTimeout(t);
+            t = setTimeout(function () { size(); makeFlakes(); }, 200);
+        });
+    })();
+    </script>
+
 </section>

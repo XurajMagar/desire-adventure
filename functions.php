@@ -151,6 +151,18 @@ function desire_adventure_customizer_settings( $wp_customize ) {
         'settings'    => 'desire_hero_video_mobile',
         'mime_type'   => 'video',
     ) ) );
+    // Mobile (vertical) banner video — shown on screens 1023px and below
+    $wp_customize->add_setting( 'desire_hero_video_mobile', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'hero_video_mobile_control', array(
+        'label'       => __( 'Banner Video — Mobile (vertical MP4)', 'desire-adventure' ),
+        'description' => __( 'Optional. Vertical 9:16 clip for phones.', 'desire-adventure' ),
+        'section'     => 'desire_hero_section',
+        'settings'    => 'desire_hero_video_mobile',
+        'mime_type'   => 'video',
+    ) ) );
 } // <--- ALL settings must be ABOVE this closing bracket!
 
 add_action( 'customize_register', 'desire_adventure_customizer_settings' );

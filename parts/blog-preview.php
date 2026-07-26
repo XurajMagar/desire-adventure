@@ -37,10 +37,8 @@ if ( ! $blog_query->have_posts() ) return;
         <!-- Cards Grid -->
         <div class="bp-grid">
             <?php
-            $post_count = 0;
             while ( $blog_query->have_posts() ) :
                 $blog_query->the_post();
-                $post_count++;
 
                 $thumb_url = get_the_post_thumbnail_url( get_the_ID(), 'large' )
                     ?: get_template_directory_uri() . '/images/trip-placeholder.webp';
@@ -52,47 +50,23 @@ if ( ! $blog_query->have_posts() ) return;
                 // Get first category
                 $cats     = get_the_category();
                 $cat_name = ! empty( $cats ) ? $cats[0]->name : '';
-
-                if ( $post_count === 1 ) :
-                    // BIG CARD
-                    ?>
-                    <a href="<?php the_permalink(); ?>" class="bp-card bp-card-big">
-                        <div class="bp-thumb-big" style="background-image: url('<?php echo esc_url( $thumb_url ); ?>');"></div>
-                        <div class="bp-content-big">
-                            <?php if ( $cat_name ) : ?>
-                                <span class="bp-cat"><?php echo esc_html( $cat_name ); ?></span>
-                            <?php endif; ?>
-                            <h3 class="bp-post-title-big"><?php the_title(); ?></h3>
-                            <p class="bp-excerpt"><?php echo wp_trim_words( get_the_excerpt(), 22, '...' ); ?></p>
-                            <div class="bp-meta">
-                                <span><?php echo get_the_date(); ?></span>
-                                <span class="bp-meta-dot"></span>
-                                <span><?php echo (int) $read_time; ?> min read</span>
-                            </div>
-                            <div class="bp-read-more">Read article →</div>
+                ?>
+                <a href="<?php the_permalink(); ?>" class="bp-card">
+                    <div class="bp-thumb" style="background-image: url('<?php echo esc_url( $thumb_url ); ?>');"></div>
+                    <div class="bp-content">
+                        <?php if ( $cat_name ) : ?>
+                            <span class="bp-cat"><?php echo esc_html( $cat_name ); ?></span>
+                        <?php endif; ?>
+                        <h3 class="bp-post-title"><?php the_title(); ?></h3>
+                        <p class="bp-excerpt"><?php echo wp_trim_words( get_the_excerpt(), 18, '…' ); ?></p>
+                        <div class="bp-meta">
+                            <span><?php echo get_the_date(); ?></span>
+                            <span class="bp-meta-dot"></span>
+                            <span><?php echo (int) $read_time; ?> min read</span>
                         </div>
-                    </a>
-                    <?php
-                else :
-                    // SMALL CARDS
-                    ?>
-                    <a href="<?php the_permalink(); ?>" class="bp-card bp-card-small">
-                        <div class="bp-thumb-small" style="background-image: url('<?php echo esc_url( $thumb_url ); ?>');"></div>
-                        <div class="bp-content-small">
-                            <?php if ( $cat_name ) : ?>
-                                <span class="bp-cat"><?php echo esc_html( $cat_name ); ?></span>
-                            <?php endif; ?>
-                            <h3 class="bp-post-title-small"><?php the_title(); ?></h3>
-                            <div class="bp-meta">
-                                <span><?php echo get_the_date(); ?></span>
-                                <span class="bp-meta-dot"></span>
-                                <span><?php echo (int) $read_time; ?> min read</span>
-                            </div>
-                        </div>
-                    </a>
-                    <?php
-                endif;
-
+                    </div>
+                </a>
+                <?php
             endwhile;
             wp_reset_postdata();
             ?>
