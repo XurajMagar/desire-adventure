@@ -2785,7 +2785,8 @@ body.home {
     width: max-content;
     animation: aff-marquee 22s linear infinite;
     /* Start from center — offset by 25% so it begins centered */
-    transform: translateX(calc(-25%));
+    /*transform: translateX(calc(-25%));*/
+    will-change: transform;
 }
 
 
@@ -2832,20 +2833,15 @@ body.home {
     width: auto;
     max-width: 140px;
     object-fit: contain;
-    /* Greyscale + faded by default — professional and clean */
-    filter: grayscale(100%) opacity(0.45);
     transition: filter 0.4s ease;
 }
 
 
-/* Full colour on hover */
+/* --- Text Fallback (when no logo image uploaded) --- */
 
 .aff-logo-item:hover img {
-    filter: grayscale(0%) opacity(1);
+    transform: scale(1.06);
 }
-
-
-/* --- Text Fallback (when no logo image uploaded) --- */
 
 .aff-logo-text {
     font-family: 'DM Sans', sans-serif;
@@ -5262,11 +5258,19 @@ body.home {
 /* Floater stays off-screen until the hero scrolls away (see trip-page.js) */
 
 .tp-mobile-floater {
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+    transition: none;
 }
 
 .tp-mobile-floater.is-revealed {
+    transform: none;
+}
+
+.tp-floater-bottom {
+    transform: translateY(120%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.tp-mobile-floater.is-revealed .tp-floater-bottom {
     transform: translateY(0);
 }
 
@@ -5279,13 +5283,16 @@ body.home {
     border-radius: 20px 20px 0 0;
     padding: 20px 20px 8px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
     pointer-events: none;
-    /* ← prevents accidental clicks when hidden */
 }
 
 .tp-floater-panel.is-open {
+    opacity: 1;
+    visibility: visible;
     transform: translateY(0);
     pointer-events: all;
 }
@@ -5994,10 +6001,7 @@ body {
 .tp-gallery-strip,
 .tp-subnav-wrap,
 .tp-page-body,
-.tp-main,
-.tp-mobile-floater,
-.tp-floater-panel,
-.tp-floater-bottom {
+.tp-main {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -13022,8 +13026,17 @@ body.single-trips .site-header.is-revealed .nav-dropdown a:hover {
         pointer-events: auto !important;
         background: transparent;
     }
+    /* Frosted glass bar once scrolled */
     .site-header.is-revealed {
-        background: rgba(255, 255, 255, 0.96);
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 18px rgba(0, 0, 0, 0.06);
+    }
+    /* White hamburger over the hero → dark on the glass bar */
+    .site-header.is-revealed .nav-hamburger span {
+        background: #0f5a43;
     }
 }
 

@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!overlay) return;
         overlay.classList.add('is-open');
         document.body.style.overflow = 'hidden';
+        // Ignore the tail of the tap that opened this popup (iOS touch fires a
+        // click on the just-revealed overlay, which would close it instantly).
+        overlay.dataset.justOpened = '1';
+        setTimeout(function() { delete overlay.dataset.justOpened; }, 350);
     }
 
     function closePopup(id) {
@@ -45,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close on backdrop click
     document.querySelectorAll('.tp-popup-overlay').forEach(function(overlay) {
         overlay.addEventListener('click', function(e) {
+            if (overlay.dataset.justOpened) return; // ignore the opening tap
             if (e.target === overlay) closePopup(overlay.id);
         });
     });
@@ -550,6 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
             floaterPanel.classList.add('is-open');
             floaterTrigger.classList.add('is-open');
             floaterTrigger.setAttribute('aria-expanded', 'true');
+
         }
 
         function closeFloater() {
@@ -563,8 +569,17 @@ document.addEventListener('DOMContentLoaded', function() {
             floaterPanel.classList.contains('is-open') ? closeFloater() : openFloater();
         });
 
-        document.addEventListener('click', function(e) {
-            if (!floater.contains(e.target)) closeFloater();
+        // Clicks inside the panel must not bubble to the document close handler
+        floaterPanel.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Close when tapping outside. Use pointerdown (fires reliably on iOS)
+        // and ignore taps on the trigger or panel so the opening tap can't self-close.
+        document.addEventListener('pointerdown', function(e) {
+            if (!floaterPanel.classList.contains('is-open')) return;
+            if (floater.contains(e.target)) return;
+            closeFloater();
         });
 
         // Wire mobile floater buttons to popups

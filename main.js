@@ -319,6 +319,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Mobile: reveal the header background on scroll (touch devices have no hover)
+    (function() {
+        if (!header) return;
+        var mqMobile = window.matchMedia('(max-width: 1024px)');
+
+        function onScroll() {
+            if (!mqMobile.matches) return; // desktop uses the hover/pill behavior
+            if (window.scrollY > 40) {
+                header.classList.add('is-revealed');
+            } else {
+                header.classList.remove('is-revealed');
+            }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        if (mqMobile.addEventListener) mqMobile.addEventListener('change', onScroll);
+        onScroll();
+    })();
+
     // Scrolled header shadow
     (function() {
         if (!document.getElementById('pmtBody')) return;
