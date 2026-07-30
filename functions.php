@@ -29,21 +29,46 @@ add_action( 'after_setup_theme', 'desire_adventure_setup' );
 function desire_adventure_customizer_settings( $wp_customize ) {
     
     // --- SECTION 1: HEADER SETTINGS ---
-    $wp_customize->add_section( 'desire_settings_section' , array(
-        'title'      => __( 'Desire Adventure Settings', 'desire-adventure' ),
-        'priority'   => 30,
+    $wp_customize->add_section( 'desire_settings_section', array(
+        'title'    => __( 'Desire Adventure Settings', 'desire-adventure' ),
+        'priority' => 30,
     ) );
 
-    // WhatsApp Number Setting
+    // WhatsApp Number
     $wp_customize->add_setting( 'desire_whatsapp_number', array(
-        'default'   => '+977 9851233710',
-        'transport' => 'refresh',
+        'default'           => '+977 9761840434',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'sanitize_text_field',
     ) );
-    $wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'desire_whatsapp_control', array(
-        'label'      => __( 'WhatsApp Number', 'desire-adventure' ),
-        'section'    => 'desire_settings_section',
-        'settings'   => 'desire_whatsapp_number',
-        'type'       => 'text',
+    $wp_customize->add_control( 'desire_whatsapp_control', array(
+        'label'    => __( 'WhatsApp Number', 'desire-adventure' ),
+        'section'  => 'desire_settings_section',
+        'settings' => 'desire_whatsapp_number',
+        'type'     => 'text',
+    ) );
+
+    // WhatsApp Agent Name
+    $wp_customize->add_setting( 'desire_wa_name', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'desire_wa_name_ctrl', array(
+        'label'    => __( 'WhatsApp Agent Name', 'desire-adventure' ),
+        'section'  => 'desire_settings_section',
+        'settings' => 'desire_wa_name',
+        'type'     => 'text',
+    ) );
+
+    // WhatsApp Agent Avatar
+    $wp_customize->add_setting( 'desire_wa_avatar', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'desire_wa_avatar_ctrl', array(
+        'label'     => __( 'WhatsApp Agent Avatar', 'desire-adventure' ),
+        'section'   => 'desire_settings_section',
+        'settings'  => 'desire_wa_avatar',
+        'mime_type' => 'image',
     ) ) );
 
     // Sticky Header Toggle
@@ -170,8 +195,19 @@ add_action( 'customize_register', 'desire_adventure_customizer_settings' );
 function desire_adventure_register_trips() {
     $args = array(
         'labels' => array(
-            'name' => 'Trips',
-            'singular_name' => 'Trip',
+            'name'               => 'Trips',
+            'singular_name'      => 'Trip',
+            'menu_name'          => 'Trips',
+            'add_new'            => 'Add Trip',
+            'add_new_item'       => 'Add New Trip',
+            'edit_item'          => 'Edit Trip',
+            'new_item'           => 'New Trip',
+            'view_item'          => 'View Trip',
+            'view_items'         => 'View Trips',
+            'search_items'       => 'Search Trips',
+            'not_found'          => 'No trips found',
+            'not_found_in_trash' => 'No trips found in Trash',
+            'all_items'          => 'All Trips',
         ),
         'public'      => true,
         'has_archive' => true,
@@ -2066,21 +2102,23 @@ function desire_handle_trip_booking() {
 
     // Calculate amounts
     $price_num    = (float) preg_replace( '/[^0-9.]/', '', $trip_price );
-    $deposit_amt  = $price_num > 0 ? round( $price_num * 0.25, 2 ) : 0;
+    $deposit_amt  = $price_num > 0 ? round( $price_num * 0.20, 2 ) : 0;
     $total_amt    = $price_num * $pax;
 
     $payment_label = $payment_type === 'now'
-        ? 'Pay 25% Deposit to Confirm'
+        ? 'Pay 20% Deposit to Confirm'
         : 'Book Now Pay Later';
 
     // ── Email to Admin ────────────────────────────
     $admin_to      = get_theme_mod( 'desire_contact_email', get_option( 'admin_email' ) );
-    $admin_subject = '🏔 New Booking Request: ' . $trip_name . ' [' . $booking_ref . ']';
+    $type_label = ( $type === 'departure' ) ? 'GROUP DEPARTURE' : 'CUSTOM DATE';
+    $admin_subject = '🏔 [' . $type_label . '] Booking: ' . $trip_name . ' [' . $booking_ref . ']';
 
     $admin_body  = "NEW BOOKING REQUEST\n";
     $admin_body .= str_repeat( '─', 50 ) . "\n\n";
     $admin_body .= "Booking Ref:    {$booking_ref}\n";
-    $admin_body .= "Payment Type:   {$payment_label}\n\n";
+    $admin_body .= "Payment Type:   {$payment_label}\n";
+    $admin_body .= "Booking Type:   " . ( $type === 'departure' ? '>> JOIN A GROUP DEPARTURE <<' : '>> CUSTOM PRIVATE DATE <<' ) . "\n\n";
     $admin_body .= "TRIP DETAILS\n";
     $admin_body .= "Trek:           {$trip_name}\n";
     $admin_body .= "Type:           " . ( $type === 'departure' ? 'Group Departure' : 'Custom Date' ) . "\n";
@@ -2089,7 +2127,7 @@ function desire_handle_trip_booking() {
     $admin_body .= "People:         {$pax}\n";
     if ( $trip_price )   $admin_body .= "Price/Person:   {$trip_price}\n";
     if ( $total_amt > 0 ) $admin_body .= "Total Amount:   USD " . number_format( $total_amt, 0 ) . "\n";
-    if ( $deposit_amt > 0 ) $admin_body .= "25% Deposit:    USD " . number_format( $deposit_amt, 2 ) . "\n";
+    if ( $payment_type === 'now' && $deposit_amt > 0 ) $admin_body .= "20% Deposit (to be paid):    USD " . number_format( $deposit_amt, 2 ) . "\n";
     $admin_body .= "\nCUSTOMER DETAILS\n";
     $admin_body .= "Name:           {$name}\n";
     $admin_body .= "Email:          {$email}\n";
@@ -2126,8 +2164,8 @@ function desire_handle_trip_booking() {
         $cust_body .= "Number of People:   {$pax}\n";
         if ( $trip_price )    $cust_body .= "Price per Person:   {$trip_price}\n";
         if ( $total_amt > 0 ) $cust_body .= "Total Amount:       USD " . number_format( $total_amt, 0 ) . "\n";
-        if ( $deposit_amt > 0 ) {
-            $cust_body .= "Deposit (25%):      USD " . number_format( $deposit_amt, 2 ) . "\n";
+        if ( $payment_type === 'now' && $deposit_amt > 0 ) {
+        $cust_body .= "Deposit (20%):      USD " . number_format( $deposit_amt, 2 ) . "\n";
         }
         $cust_body .= "\nWHAT HAPPENS NEXT\n";
         $cust_body .= str_repeat( '─', 50 ) . "\n";
@@ -2168,7 +2206,7 @@ function desire_handle_trip_booking() {
             'trip'    => urlencode( $trip_name ),
             'ref'     => urlencode( $booking_ref ),
             'payment' => $payment_type,
-            'deposit' => $deposit_amt > 0 ? $deposit_amt : '',
+            'deposit' => $payment_type === 'now' && $deposit_amt > 0 ? $deposit_amt : '',
         ),
         home_url( '/thank-you/' )
     ));
@@ -3770,7 +3808,7 @@ function desire_handle_pmt_inquiry() {
 
     $body .= "\nMESSAGE:\n$message\n";
 
-    $to      = get_option( 'admin_email' );
+    $to = get_theme_mod( 'desire_contact_email', get_option( 'admin_email' ) );
     $subject = "Plan My Trip Inquiry — $name";
     $headers = array(
         'Content-Type: text/plain; charset=UTF-8',

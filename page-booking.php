@@ -36,7 +36,7 @@ if ( $trip_id ) {
 
 // Calculate amounts
 $price_num   = (float) preg_replace( '/[^0-9.]/', '', $trip_price );
-$deposit_amt = $price_num > 0 ? round( $price_num * 0.25, 2 ) : 0;
+$deposit_amt = $price_num > 0 ? round( $price_num * 0.20, 2 ) : 0;
 $total_amt   = $price_num * $pax;
 
 // Generate booking reference
@@ -119,7 +119,7 @@ $booking_ref = $trek_code . '-' . $date_code . '-' . $unique_num;
             <?php if ( $deposit_amt > 0 ) : ?>
             <div class="bk-summary-row bk-deposit-row">
                 <span>
-                    Deposit to Confirm (25%)
+                    Deposit to Confirm (20%)
                     <small style="display:block;font-size:10px;color:#aaa;margin-top:2px">Per person only</small>
                 </span>
             </div>
@@ -213,7 +213,7 @@ $booking_ref = $trek_code . '-' . $date_code . '-' . $unique_num;
                             <span class="bk-payment-icon">💳</span>
                             <div class="bk-payment-info">
                                 <span class="bk-payment-title">
-                                    Pay 25% Deposit to Confirm
+                                    Pay 20% Deposit to Confirm
                                     <?php if ( $deposit_amt > 0 ) : ?>
                                     <span class="bk-payment-amount">USD <?php echo number_format( $deposit_amt, 2 ); ?></span>
                                     <?php endif; ?>

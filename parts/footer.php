@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 $ft_about     = get_theme_mod( 'desire_ft_about', 'We guide passionate trekkers through the world\'s most breathtaking Himalayan landscapes. Every trail, every summit — experienced with heart.' );
 $ft_tagline   = get_theme_mod( 'desire_ft_tagline', 'Nepal\'s Premier Trekking Agency' );
-$ft_email     = get_theme_mod( 'desire_ft_email', 'info@desireadventures.com' );
+$ft_email     = get_theme_mod( 'desire_ft_email', 'info@desireadventure.com' );
 $ft_phone     = get_theme_mod( 'desire_ft_phone', '+977 9851233710' );
 $ft_address   = get_theme_mod( 'desire_ft_address', 'Thamel, Kathmandu, Nepal' );
 $ft_fb        = get_theme_mod( 'desire_ft_facebook', '#' );
@@ -209,6 +209,26 @@ $ft_trust     = get_theme_mod( 'desire_ft_trust', '' );
     </svg>
 
 </footer>
+
+<?php
+// Floating WhatsApp button — all pages EXCEPT single trip pages
+// (single trips already have the booking floater in that corner)
+if ( ! is_singular( 'trips' ) ) :
+    $wa_float_num = preg_replace( '/\D+/', '', get_theme_mod( 'desire_whatsapp_number', '+977 9761840434' ) );
+    if ( $wa_float_num ) :
+?>
+<a href="https://wa.me/<?php echo esc_attr( $wa_float_num ); ?>"
+   class="wa-float" target="_blank" rel="noopener noreferrer"
+   aria-label="Chat with us on WhatsApp">
+    <span class="wa-float-label">Chat with us</span>
+    <span class="wa-float-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+            <path d="M17.5 14.4c-.3-.15-1.7-.85-2-.95-.25-.1-.45-.15-.65.15-.2.3-.75.95-.9 1.15-.15.2-.35.2-.65.05-.3-.15-1.25-.45-2.4-1.5-.9-.8-1.5-1.75-1.65-2.05-.15-.3 0-.45.15-.6.15-.15.3-.35.45-.55.15-.2.2-.3.3-.5.1-.2.05-.4-.05-.55-.1-.15-.65-1.55-.9-2.15-.25-.55-.5-.5-.65-.5h-.55c-.2 0-.5.05-.75.35-.25.3-.95.95-.95 2.3 0 1.35.95 2.65 1.1 2.85.15.2 1.9 2.95 4.65 4.1.65.3 1.15.45 1.55.55.65.2 1.25.15 1.7.1.5-.05 1.7-.7 1.95-1.35.25-.65.25-1.2.15-1.35-.1-.15-.3-.2-.6-.35z"/>
+            <path d="M12 2C6.5 2 2 6.5 2 12c0 1.85.5 3.6 1.4 5.1L2 22l5-1.35A9.9 9.9 0 0 0 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18a8 8 0 0 1-4.05-1.1l-.3-.15-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/>
+        </svg>
+    </span>
+</a>
+<?php endif; endif; ?>
 
 <?php wp_footer(); ?>
 </body>

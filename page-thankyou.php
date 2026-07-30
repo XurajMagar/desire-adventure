@@ -125,7 +125,7 @@ $is_pay_now   = $payment_type === 'now';
                     <div class="ty-step-info">
                         <span class="ty-step-name">
                             <?php if ( $is_pay_now ) : ?>
-                                Pay Deposit — USD <?php echo $deposit > 0 ? number_format( $deposit, 2 ) : '25%'; ?>
+                                Pay Deposit — USD <?php echo $deposit > 0 ? number_format( $deposit, 2 ) : '20%'; ?>
                             <?php elseif ( $is_booking ) : ?>
                                 Confirm &amp; Arrange Payment
                             <?php else : ?>
@@ -134,7 +134,7 @@ $is_pay_now   = $payment_type === 'now';
                         </span>
                         <span class="ty-step-desc">
                             <?php if ( $is_pay_now ) : ?>
-                            We will send payment details for your 25% deposit to fully secure your spot.
+                            We will send payment details for your 20% deposit to fully secure your spot.
                             <?php elseif ( $is_booking ) : ?>
                             We will confirm your spot and discuss payment options that work for you.
                             <?php else : ?>
