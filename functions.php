@@ -3541,6 +3541,10 @@ function desire_handle_contact_form() {
         wp_safe_redirect( home_url( '/thank-you/' ) );
         exit;
     }
+        if ( desire_date_is_invalid( $_POST['ct_date'] ?? '' ) ) {
+        wp_safe_redirect( home_url( '/thank-you/' ) );
+        exit;
+    }
 
     $name       = sanitize_text_field( $_POST['ct_name']     ?? '' );
     $email      = sanitize_email(      $_POST['ct_email']    ?? '' );
@@ -3837,26 +3841,70 @@ function desire_form_spam_fields() {
 /**
  * Returns true if a submission looks automated.
  */
-function desire_form_is_spam() {
-    if ( ! empty( $_POST['desire_hp'] ) ) {
-        return true;
-    }
-
-    $started = isset( $_POST['desire_ts'] ) ? absint( $_POST['desire_ts'] ) : 0;
-    if ( $started && ( time() - $started ) < 3 ) {
-        return true;
-    }
-
-    $ip = isset( $_SERVER['REMOTE_ADDR'] )
-        ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-    if ( $ip ) {
-        $key   = 'desire_rl_' . md5( $ip );
-        $count = (int) get_transient( $key );
-        if ( $count >= 5 ) {
+    function desire_form_is_spam() {
+        if ( ! empty( $_POST['desire_hp'] ) ) {
             return true;
         }
-        set_transient( $key, $count + 1, 15 * MINUTE_IN_SECONDS );
+    
+        $started = isset( $_POST['desire_ts'] ) ? absint( $_POST['desire_ts'] ) : 0;
+        if ( $started && ( time() - $started ) < 3 ) {
+            return true;
+        }
+    
+        // Gather free-text fields to inspect for spam content
+        $text = '';
+        foreach ( array( 'tp_message', 'contact_message', 'pmt_message', 'bk_message', 'message', 'tp_name', 'contact_name' ) as $field ) {
+            if ( ! empty( $_POST[ $field ] ) ) {
+                $text .= ' ' . wp_unslash( $_POST[ $field ] );
+            }
+        }
+    
+        // 1. Reject Cyrillic / non-Latin script
+        if ( preg_match( '/[\x{0400}-\x{04FF}]/u', $text ) ) {
+            return true;
+        }
+    
+        // 2. Reject messages containing URLs
+        if ( preg_match( '#https?://|www\.|\.ru\b|\.xyz\b#i', $text ) ) {
+            return true;
+        }
+    
+        // 3. Reject an excessive number of links/domains
+        if ( preg_match_all( '#\.[a-z]{2,6}/#i', $text ) >= 3 ) {
+            return true;
+        }
+    
+        // 4. IP rate limit: 5 submissions per IP per 15 minutes
+        $ip = isset( $_SERVER['REMOTE_ADDR'] )
+            ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+        if ( $ip ) {
+            $key   = 'desire_rl_' . md5( $ip );
+            $count = (int) get_transient( $key );
+            if ( $count >= 5 ) {
+                return true;
+            }
+            set_transient( $key, $count + 1, 15 * MINUTE_IN_SECONDS );
+        }
+    
+        return false;
     }
-
-    return false;
-}
+    
+    /**
+     * Validate a travel/departure date: must be a real, future date.
+     * Returns true if the date is INVALID (should be rejected).
+     */
+    function desire_date_is_invalid( $date_str ) {
+        $date_str = trim( (string) $date_str );
+        if ( $date_str === '' ) {
+            return false;
+        }
+        $d = DateTime::createFromFormat( 'Y-m-d', $date_str );
+        if ( ! $d || $d->format( 'Y-m-d' ) !== $date_str ) {
+            return true;
+        }
+        $today = new DateTime( 'today' );
+        if ( $d < $today ) {
+            return true;
+        }
+        return false;
+    }
