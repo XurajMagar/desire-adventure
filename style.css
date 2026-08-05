@@ -14400,3 +14400,28 @@ body.single-trips .site-header.is-revealed .nav-dropdown a:hover {
         display: none;
     }
 }
+
+.page-default-header {
+    background: #0f5a43;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.page-default-title {
+    color: #F5F0E8;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    margin: 0;
+}
+
+.page-default-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.page-default-content {
+    padding: 60px 0;
+    line-height: 1.7;
+    color: #333;
+}
